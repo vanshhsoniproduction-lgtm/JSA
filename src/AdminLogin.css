@@ -1,0 +1,193 @@
+/* ========================================================
+   JSA ADMIN LOGIN STYLESHEET (FIXED MODAL OVERLAY)
+   ======================================================== */
+
+.login-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 13, 22, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 1.5rem;
+}
+
+.login-card {
+  background: #ffffff;
+  border: 1px solid rgba(248, 117, 170, 0.35);
+  border-radius: var(--radius-island-lg);
+  max-width: 440px;
+  width: 100%;
+  padding: 3rem 2.4rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(248, 117, 170, 0.25);
+  text-align: center;
+  position: relative;
+  animation: modalScaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalScaleUp {
+  0% {
+    opacity: 0;
+    transform: scale(0.94) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.login-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--wine-700);
+  background: #FDEDED;
+  border: 1px solid rgba(248, 117, 170, 0.3);
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-pill);
+  margin-bottom: 1.2rem;
+}
+
+.login-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 0.8rem;
+  border: 2px solid rgba(248, 117, 170, 0.35);
+  box-shadow: 0 4px 16px rgba(248, 117, 170, 0.2);
+}
+
+.login-title {
+  font-size: 1.7rem;
+  color: var(--ink-900);
+  margin-bottom: 0.2rem;
+}
+
+.login-subtitle {
+  font-size: 0.82rem;
+  color: var(--ink-500);
+  margin-bottom: 1.8rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  text-align: left;
+}
+
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #FDEDED;
+  border: 1px solid #F875AA;
+  color: #d94982;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.75rem 0.95rem;
+  border-radius: var(--radius-pill);
+}
+
+.login-input-group label {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ink-700);
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+}
+
+.login-input-shell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #FDEDED;
+  border: 1.5px solid rgba(248, 117, 170, 0.25);
+  border-radius: var(--radius-pill);
+  transition: all 0.2s ease;
+}
+
+.login-input-shell:focus-within {
+  background: #ffffff;
+  border-color: #F875AA;
+  box-shadow: 0 0 0 3px rgba(248, 117, 170, 0.15);
+}
+
+.login-icon {
+  position: absolute;
+  left: 1.1rem;
+  color: #F875AA;
+  pointer-events: none;
+}
+
+.login-input-shell input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 0.85rem 1.1rem 0.85rem 2.8rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: var(--ink-900);
+  outline: none;
+}
+
+.btn-login-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.95rem;
+  background: linear-gradient(135deg, #F875AA 0%, #d94982 100%);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid #F875AA;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(248, 117, 170, 0.35);
+  transition: all 0.25s ease;
+  margin-top: 0.5rem;
+}
+
+.btn-login-submit:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ff8cb9 0%, #F875AA 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(248, 117, 170, 0.5);
+}
+
+.btn-login-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-footer-actions {
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.btn-back-site {
+  background: none;
+  border: none;
+  color: var(--ink-500);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.btn-back-site:hover {
+  color: var(--wine-700);
+}
