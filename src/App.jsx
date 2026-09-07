@@ -6,6 +6,12 @@ import {
   ChevronLeft,
   ChevronRight,
   Users,
+  Briefcase,
+  LayoutGrid,
+  Gem,
+  Scale,
+  BadgeCheck,
+  Globe2,
   Store,
   Award,
   ShieldCheck,
@@ -20,7 +26,13 @@ import {
   Coins,
   Building,
   Layers,
-  Sparkles
+  Sparkles,
+  ExternalLink,
+  Calendar,
+  Lock,
+  Coffee,
+  Car,
+  CheckCircle2
 } from 'lucide-react';
 import './App.css';
 
@@ -32,6 +44,7 @@ import {
 import AdminPanel from './AdminPanel';
 import AdminLogin from './AdminLogin';
 import RegistrationPage from './RegistrationPage';
+import ContactPage from './ContactPage';
 
 // Clean SVG Instagram Icon
 const InstagramIcon = ({ size = 18, className = "" }) => (
@@ -135,9 +148,9 @@ function CounterNumber({ endValue, duration = 2000, suffix = "+" }) {
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
+  const [registerRole, setRegisterRole] = useState('visitor');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [galleryFilter, setGalleryFilter] = useState('all');
   const [scrolled, setScrolled] = useState(false);
   const [adminAuth, setAdminAuth] = useState(false);
@@ -148,7 +161,7 @@ export default function App() {
     initStorage();
     setAdminAuth(checkAdminAuth());
 
-    // Check URL query / hash for admin or register routes
+    // Check URL query / hash for admin, register, or contact routes
     const checkRoute = () => {
       const hash = window.location.hash.toLowerCase();
       const path = window.location.pathname.toLowerCase();
@@ -159,6 +172,14 @@ export default function App() {
           setShowAdminLogin(true);
         }
       } else if (
+        hash === '#register-exhibitor' ||
+        hash === '#exhibitor' ||
+        hash === '#/exhibitor' ||
+        hash === '#exhibitor-intent'
+      ) {
+        setRegisterRole('exhibitor');
+        setCurrentPage('register');
+      } else if (
         hash === '#register' ||
         hash === '#/register' ||
         hash === '#visitor' ||
@@ -167,7 +188,10 @@ export default function App() {
         path.includes('register') ||
         path.includes('visitor')
       ) {
+        setRegisterRole('visitor');
         setCurrentPage('register');
+      } else if (hash === '#contact' || hash === '#/contact' || path.includes('contact')) {
+        setCurrentPage('contact');
       }
     };
 
@@ -176,9 +200,10 @@ export default function App() {
     return () => window.removeEventListener('hashchange', checkRoute);
   }, []);
 
-  const goToRegister = (e) => {
-    if (e && e.preventDefault) e.preventDefault();
-    window.location.hash = 'register';
+  const goToRegister = (role = 'visitor') => {
+    const targetRole = role === 'exhibitor' ? 'exhibitor' : 'visitor';
+    setRegisterRole(targetRole);
+    window.location.hash = targetRole === 'exhibitor' ? 'register-exhibitor' : 'register';
     setCurrentPage('register');
     setMobileMenuOpen(false);
   };
@@ -219,6 +244,7 @@ export default function App() {
   if (currentPage === 'register') {
     return (
       <RegistrationPage 
+        initialRole={registerRole}
         onGoHome={() => {
           window.location.hash = '';
           setCurrentPage('home');
@@ -293,9 +319,12 @@ export default function App() {
             >
               Gallery
             </button>
-            <a href="#contact-desk" className="island-link">
+            <button 
+              className={`island-link ${currentPage === 'contact' ? 'active' : ''}`}
+              onClick={() => setCurrentPage('contact')}
+            >
               Contact
-            </a>
+            </button>
           </nav>
 
           <div className="island-divider"></div>
@@ -308,7 +337,7 @@ export default function App() {
             </div>
             
             <button 
-              onClick={goToRegister}
+              onClick={() => goToRegister('visitor')}
               className="btn-island-primary"
             >
               <span>Register</span>
@@ -332,16 +361,16 @@ export default function App() {
               <span>22 – 24 NOVEMBER 2026 • BIRLA AUDITORIUM</span>
             </div>
             <div className="drawer-links">
-              <button onClick={() => setCurrentPage('home')} className={currentPage === 'home' ? 'active' : ''}>Home</button>
-              <button onClick={() => setCurrentPage('about')} className={currentPage === 'about' ? 'active' : ''}>About Us</button>
-              <button onClick={() => setCurrentPage('exhibitor-alerts')} className={currentPage === 'exhibitor-alerts' ? 'active' : ''}>Exhibitor Alerts</button>
-              <button onClick={() => setCurrentPage('visitor-alerts')} className={currentPage === 'visitor-alerts' ? 'active' : ''}>Visitor Alerts</button>
-              <button onClick={() => setCurrentPage('gallery')} className={currentPage === 'gallery' ? 'active' : ''}>Gallery</button>
-              <a href="#contact-desk" onClick={() => setMobileMenuOpen(false)}>Contact Us</a>
+              <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); }} className={currentPage === 'home' ? 'active' : ''}>Home</button>
+              <button onClick={() => { setCurrentPage('about'); setMobileMenuOpen(false); }} className={currentPage === 'about' ? 'active' : ''}>About Us</button>
+              <button onClick={() => { setCurrentPage('exhibitor-alerts'); setMobileMenuOpen(false); }} className={currentPage === 'exhibitor-alerts' ? 'active' : ''}>For Exhibitors</button>
+              <button onClick={() => { setCurrentPage('visitor-alerts'); setMobileMenuOpen(false); }} className={currentPage === 'visitor-alerts' ? 'active' : ''}>For Visitors</button>
+              <button onClick={() => { setCurrentPage('gallery'); setMobileMenuOpen(false); }} className={currentPage === 'gallery' ? 'active' : ''}>Gallery</button>
+              <button onClick={() => { setCurrentPage('contact'); setMobileMenuOpen(false); }} className={currentPage === 'contact' ? 'active' : ''}>Contact Us</button>
             </div>
             <div className="drawer-cta-stack">
-              <button onClick={goToRegister} className="btn-solid w-full">Register as Visitor</button>
-              <a href="https://jsasilvershow.com/exhibitor-intent-form" target="_blank" rel="noopener noreferrer" className="btn-outlined w-full">Exhibitor Intent</a>
+              <button onClick={() => goToRegister('visitor')} className="btn-solid w-full">Register as Visitor</button>
+              <button onClick={() => goToRegister('exhibitor')} className="btn-outlined w-full">Exhibitor Intent</button>
             </div>
           </div>
         )}
@@ -371,44 +400,40 @@ export default function App() {
             {/* Hero Main Content */}
             <div className="hero-fullscreen-container">
               <div className="hero-content-stack">
-                <div className="hero-subheading-line hero-badge-glow">
-                  <span className="live-sparkle-dot"></span>
-                  <span>22 – 24 NOVEMBER 2026 • BIRLA AUDITORIUM, JAIPUR</span>
-                </div>
-
                 <h1 className="hero-fullscreen-title font-serif">
                   Jaipur Silver <br className="hero-break" />
                   <span className="text-shimmer-pink">Show 2026</span>
                 </h1>
 
+                <div className="hero-subheading-line hero-badge-glow">
+                  <span className="live-sparkle-dot"></span>
+                  <span>22 – 24 NOVEMBER 2026 • BIRLA AUDITORIUM, JAIPUR</span>
+                </div>
+
                 <div className="hero-cta-row">
                   <button 
-                    onClick={goToRegister}
+                    onClick={() => goToRegister('visitor')}
                     className="btn-hero-primary"
                   >
                     <span>REGISTER AS VISITOR (FREE)</span>
                     <ArrowRight size={15} />
                   </button>
 
-                  <a 
-                    href="https://jsasilvershow.com/exhibitor-intent-form" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                  <button 
+                    onClick={() => goToRegister('exhibitor')} 
                     className="btn-hero-secondary"
                   >
                     <span>EXHIBITOR INTENT</span>
                     <ArrowUpRight size={14} />
-                  </a>
+                  </button>
 
-                  <a 
-                    href="https://jsasilvershow.com/booths" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                  <button 
+                    onClick={() => goToRegister('exhibitor')} 
                     className="btn-hero-tertiary"
                   >
                     <span>FLOOR PLAN & BOOTHS</span>
                     <ArrowUpRight size={14} />
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -430,7 +455,7 @@ export default function App() {
                 <RevealSection>
                   <div className="stats-clean-grid stats-capsule-grid">
                     <div className="stat-card stat-capsule-card">
-                      <div className="stat-icon-wrap"><Users size={24} /></div>
+                      <div className="stat-icon-wrap"><Briefcase size={26} /></div>
                       <div className="stat-value font-serif">
                         <CounterNumber endValue={10000} duration={2000} suffix="+" />
                       </div>
@@ -441,7 +466,7 @@ export default function App() {
                     </div>
 
                     <div className="stat-card stat-capsule-card">
-                      <div className="stat-icon-wrap"><Store size={24} /></div>
+                      <div className="stat-icon-wrap"><LayoutGrid size={26} /></div>
                       <div className="stat-value font-serif">
                         <CounterNumber endValue={300} duration={2000} suffix="+" />
                       </div>
@@ -452,7 +477,7 @@ export default function App() {
                     </div>
 
                     <div className="stat-card stat-capsule-card">
-                      <div className="stat-icon-wrap"><Award size={24} /></div>
+                      <div className="stat-icon-wrap"><Gem size={26} /></div>
                       <div className="stat-value font-serif">
                         <CounterNumber endValue={175} duration={2000} suffix="+" />
                       </div>
@@ -480,7 +505,7 @@ export default function App() {
                   <RevealSection delay="delay-1">
                     <div className="pillar-box">
                       <span className="pillar-order font-serif">01</span>
-                      <div className="pillar-icon"><Coins size={20} /></div>
+                      <div className="pillar-icon"><Scale size={24} /></div>
                       <h4>Daily Bullion Benchmarks</h4>
                       <p>Accurate spot market rates for 999 and 925 silver to maintain price transparency and fair trading across Rajasthan.</p>
                     </div>
@@ -489,7 +514,7 @@ export default function App() {
                   <RevealSection delay="delay-2">
                     <div className="pillar-box">
                       <span className="pillar-order font-serif">02</span>
-                      <div className="pillar-icon"><ShieldCheck size={20} /></div>
+                      <div className="pillar-icon"><BadgeCheck size={24} /></div>
                       <h4>Hallmarking & Trust</h4>
                       <p>Ensuring strict compliance with purity standards and authentic craftsmanship verification for buyers.</p>
                     </div>
@@ -498,7 +523,7 @@ export default function App() {
                   <RevealSection delay="delay-3">
                     <div className="pillar-box">
                       <span className="pillar-order font-serif">03</span>
-                      <div className="pillar-icon"><Building size={20} /></div>
+                      <div className="pillar-icon"><Globe2 size={24} /></div>
                       <h4>Direct B2B Market Access</h4>
                       <p>Connecting regional master silversmiths directly with pan-India retail chains and international export channels.</p>
                     </div>
@@ -507,36 +532,123 @@ export default function App() {
               </div>
             </section>
 
-            {/* DAILY BULLION INDEX */}
-            <section className="section-space dark-band">
+            {/* DAILY BULLION INDEX & INSTAGRAM COMMUNITY */}
+            <section className="section-space">
               <div className="container">
                 <RevealSection>
-                  <div className="bullion-clean-layout">
-                    <div className="bullion-info">
-                      <span className="dark-kicker">DAILY MARKET INTELLIGENCE</span>
-                      <h2 className="bullion-title font-serif">Jaipur Silver Rates & Bullion Index</h2>
-                      <p className="bullion-desc">
-                        Daily benchmark prices monitored and maintained by the Jaipur Silver Association to safeguard trade credibility.
-                      </p>
-                    </div>
-
-                    <div className="bullion-rates-cards">
-                      <div className="rate-box">
-                        <div className="rate-label">Silver 999 (Fine)</div>
-                        <div className="rate-num font-serif">₹98,500 <span className="unit">/ kg</span></div>
-                        <div className="rate-meta">
+                  <div className="bullion-insta-grid">
+                    {/* Left: Jaipur Silver Rates & Bullion Index */}
+                    <div className="bullion-capsule-card">
+                      <div className="card-top-kicker">
+                        <span className="bullion-pill-kicker">
                           <TrendingUp size={14} />
-                          <span>Market Bullish • Verified Spot</span>
+                          <span>DAILY MARKET BENCHMARK</span>
+                        </span>
+                        <span className="live-market-badge">
+                          <span className="live-sparkle-dot"></span>
+                          <span>SPOT VERIFIED</span>
+                        </span>
+                      </div>
+
+                      <h2 className="bullion-card-title font-serif">Jaipur Silver Rates &amp; Bullion Index</h2>
+                      <p className="bullion-card-desc">
+                        Daily benchmark spot rates monitored and certified by the Jaipur Silver Association to maintain transparency across Rajasthan.
+                      </p>
+
+                      <div className="bullion-twin-rates">
+                        <div className="rate-capsule-box">
+                          <div className="rate-box-header">
+                            <span className="rate-box-name">Silver 999 (Fine)</span>
+                            <span className="rate-purity-tag">99.9% Pure</span>
+                          </div>
+                          <div className="rate-box-price font-serif">
+                            ₹98,500 <span className="rate-unit">/ kg</span>
+                          </div>
+                          <div className="rate-box-meta green-tint">
+                            <TrendingUp size={13} />
+                            <span>Market Bullish • Verified Spot</span>
+                          </div>
+                        </div>
+
+                        <div className="rate-capsule-box">
+                          <div className="rate-box-header">
+                            <span className="rate-box-name">Silver 925 (Sterling)</span>
+                            <span className="rate-purity-tag">BIS Hallmark</span>
+                          </div>
+                          <div className="rate-box-price font-serif">
+                            ₹91,200 <span className="rate-unit">/ kg</span>
+                          </div>
+                          <div className="rate-box-meta blue-tint">
+                            <BadgeCheck size={13} />
+                            <span>Hallmark Standard</span>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="rate-box">
-                        <div className="rate-label">Silver 925 (Sterling)</div>
-                        <div className="rate-num font-serif">₹91,200 <span className="unit">/ kg</span></div>
-                        <div className="rate-meta">
-                          <TrendingUp size={14} />
-                          <span>Hallmark Standard</span>
+                      <div className="bullion-card-footer">
+                        <Clock size={13} />
+                        <span>Monitored live daily • Jaipur Sarafa Market</span>
+                      </div>
+                    </div>
+
+                    {/* Right: Follow on Instagram */}
+                    <div className="insta-capsule-card">
+                      <div className="card-top-kicker">
+                        <span className="insta-pill-kicker">
+                          <InstagramIcon size={14} />
+                          <span>OFFICIAL INSTAGRAM</span>
+                        </span>
+                        <span className="insta-verified-pill">
+                          <BadgeCheck size={13} />
+                          <span>OFFICIAL PAGE</span>
+                        </span>
+                      </div>
+
+                      <div className="insta-header-profile">
+                        <div className="insta-avatar-ring">
+                          <div className="insta-avatar-inner">
+                            <img src="/jsa-show-logo.jpg" alt="JSA Silver Show" />
+                          </div>
                         </div>
+                        <div className="insta-profile-info">
+                          <div className="insta-handle-row">
+                            <h3 className="insta-handle">@jsasilvershow</h3>
+                            <BadgeCheck size={16} className="insta-check-ico" />
+                          </div>
+                          <p className="insta-tagline">Jaipur Silver Show 2026 • JSA Official</p>
+                        </div>
+                      </div>
+
+                      <p className="insta-card-desc">
+                        Follow us on Instagram for daily bullion rate reels, artisan craftsmanship spotlights, behind-the-scenes glimpses, and live expo highlights.
+                      </p>
+
+                      <div className="insta-highlights-row">
+                        <div className="insta-hl-chip">
+                          <span className="hl-dot"></span>
+                          <span>Daily Rate Reels</span>
+                        </div>
+                        <div className="insta-hl-chip">
+                          <span className="hl-dot"></span>
+                          <span>Artisan Spotlights</span>
+                        </div>
+                        <div className="insta-hl-chip">
+                          <span className="hl-dot"></span>
+                          <span>Live Expo Stories</span>
+                        </div>
+                      </div>
+
+                      <div className="insta-card-action">
+                        <a 
+                          href="https://www.instagram.com/jsasilvershow/" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="btn-insta-follow"
+                        >
+                          <InstagramIcon size={16} />
+                          <span>FOLLOW ON INSTAGRAM</span>
+                          <ArrowUpRight size={14} />
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -549,6 +661,7 @@ export default function App() {
               <div className="container">
                 <RevealSection>
                   <div className="venue-capsule-island">
+                    {/* Header */}
                     <div className="venue-capsule-header">
                       <div className="venue-header-left">
                         <span className="venue-pill-badge">
@@ -559,20 +672,27 @@ export default function App() {
                           Birla Auditorium, Jaipur
                         </h2>
                         <p className="venue-capsule-subtitle">
-                          A world-class landmark venue hosting the entire 3-hall silver exposition in the royal heart of Rajasthan.
+                          A world-class landmark convention centre hosting the entire 3-hall silver exposition in the royal heart of Rajasthan.
                         </p>
                       </div>
 
-                      <div className="venue-header-action">
+                      <div className="venue-header-actions">
                         <a 
                           href="https://www.google.com/maps/search/?api=1&query=Birla+Auditorium+Jaipur" 
                           target="_blank" 
                           rel="noopener noreferrer" 
-                          className="btn-solid venue-dir-btn"
+                          className="btn-capsule-primary"
                         >
                           <Navigation size={15} />
                           <span>GET DIRECTIONS</span>
                         </a>
+                        <button 
+                          onClick={() => goToRegister('visitor')}
+                          className="btn-capsule-secondary"
+                        >
+                          <span>VISITOR PASS</span>
+                          <ArrowRight size={14} />
+                        </button>
                       </div>
                     </div>
 
@@ -585,51 +705,63 @@ export default function App() {
                             <MapPin size={22} />
                           </div>
                           <div className="venue-addr-info">
-                            <strong>Birla Auditorium & Convention Centre</strong>
+                            <strong>Birla Auditorium &amp; Convention Centre</strong>
                             <p>Statue Circle, Bhawani Singh Marg, C Scheme, Jaipur, Rajasthan 302001, India</p>
                           </div>
                         </div>
 
                         <div className="venue-halls-grid">
                           <div className="venue-hall-capsule hall-a">
-                            <span className="hall-tag">HALL A</span>
+                            <span className="hall-tag-capsule">HALL A</span>
                             <div className="hall-details">
                               <strong>Fine Silver Jewellery</strong>
-                              <p>Bridal sets, antique filigree & export lines</p>
+                              <p>Bridal sets, antique filigree &amp; export lines</p>
                             </div>
                           </div>
 
                           <div className="venue-hall-capsule hall-b">
-                            <span className="hall-tag">HALL B</span>
+                            <span className="hall-tag-capsule">HALL B</span>
                             <div className="hall-details">
-                              <strong>Utensils & Silver Artifacts</strong>
-                              <p>Royal dinnerware, temple idols & gifting</p>
+                              <strong>Utensils &amp; Silver Artifacts</strong>
+                              <p>Royal dinnerware, temple idols &amp; corporate gifting</p>
                             </div>
                           </div>
 
                           <div className="venue-hall-capsule hall-c">
-                            <span className="hall-tag">HALL C</span>
+                            <span className="hall-tag-capsule">HALL C</span>
                             <div className="hall-details">
-                              <strong>Machinery & Allied Tech</strong>
-                              <p>Laser engraving, 3D casting & testing</p>
+                              <strong>Machinery &amp; Allied Tech</strong>
+                              <p>Laser engraving, 3D casting &amp; hallmarking testing</p>
                             </div>
                           </div>
                         </div>
                       </div>
 
-                      {/* Right: Map in rounded glass capsule */}
-                      <div className="venue-capsule-map-wrap">
-                        <div className="venue-map-inner-capsule">
-                          <iframe 
-                            title="Birla Auditorium Jaipur Map"
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3557.8596656755106!2d75.80164807611094!3d26.907156960309996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db41328bc6e3f%3A0xe54d8b965fcae135!2sBirla%20Auditorium!5e0!3m2!1sen!2sin!4v1709500000000!5m2!1sen!2sin" 
-                            width="100%" 
-                            height="340" 
-                            style={{ border: 0 }} 
-                            allowFullScreen="" 
-                            loading="lazy" 
-                            referrerPolicy="no-referrer-when-downgrade"
-                          ></iframe>
+                      {/* Right: Architectural Photograph of Birla Auditorium in rounded capsule frame */}
+                      <div className="venue-capsule-photo-wrap">
+                        <div className="venue-photo-inner-capsule">
+                          <img 
+                            src="/birla-auditorium.jpg" 
+                            alt="BM Birla Auditorium & Convention Centre, Jaipur" 
+                            className="venue-photo-img"
+                            loading="lazy"
+                          />
+                          <div className="venue-photo-overlay">
+                            <span className="venue-photo-badge">
+                              <MapPin size={13} />
+                              <span>Statue Circle, C Scheme, Jaipur</span>
+                            </span>
+                            <a 
+                              href="https://www.google.com/maps/search/?api=1&query=Birla+Auditorium+Jaipur" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="venue-photo-action-btn"
+                              aria-label="Open in Google Maps"
+                              title="Open in Google Maps"
+                            >
+                              <ExternalLink size={14} />
+                            </a>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -648,30 +780,16 @@ export default function App() {
                   <p className="section-lead">Watch highlights from our latest association meet — discussions on trade growth, member welfare, and the road ahead for Jaipur's silver industry.</p>
                 </div>
 
-                <div className="video-minimal-card">
-                  <img src="/hero-slide-2.jpg" alt="Association Meet" className="video-thumb" />
-                  <div className="video-shade"></div>
-                  
-                  <div className="video-badge">
-                    <Clock size={13} />
-                    <span>04:12</span>
-                  </div>
-
-                  <div className="video-center">
-                    <button 
-                      className="play-round-btn"
-                      onClick={() => setVideoModalOpen(true)}
-                      aria-label="Play video"
-                    >
-                      <Play size={22} className="play-ico" />
-                    </button>
-                    <span className="play-label">Watch Meeting Highlights</span>
-                  </div>
-
-                  <div className="video-bottom-info">
-                    <h4 className="font-serif">Jaipur Silver Association Annual General Assembly</h4>
-                    <p>Deliberations on export corridors, hallmarking standards, and 2026 expo setup.</p>
-                  </div>
+                <div 
+                  className="video-minimal-card" 
+                  style={{ pointerEvents: 'none', userSelect: 'none', cursor: 'default' }}
+                >
+                  <iframe 
+                    src="https://www.youtube-nocookie.com/embed/X8rk9yWXnBg?autoplay=1&mute=1&loop=1&playlist=X8rk9yWXnBg&controls=0&showinfo=0&rel=0&modestbranding=1" 
+                    title="Jaipur Silver Show Highlights"
+                    style={{ width: '100%', height: '100%', border: 'none', pointerEvents: 'none' }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                  />
                 </div>
               </RevealSection>
             </div>
@@ -879,42 +997,48 @@ export default function App() {
             </div>
           </section>
 
-          {/* TEAM INTRO */}
-          <section className="au-team-intro">
+          {/* ========================================================
+              SECTION 1: ADVISORY COMMITTEE
+              ======================================================== */}
+          <section className="au-main-section">
             <div className="container">
               <RevealSection>
-                <span className="au-label au-label--center">Our People</span>
-                <h2 className="au-h2 au-centered">The People Behind<br />JSA Silver Show</h2>
-                <p className="au-sub-lead">Meet the advisors, trustees, and committee members driving Jaipur's silver industry forward.</p>
-              </RevealSection>
-            </div>
-          </section>
-
-          {/* ADVISORY COMMITTEE */}
-          <section className="au-section au-tinted">
-            <div className="container">
-              <RevealSection>
-                <div className="au-group-head">
-                  <span className="au-pill">Advisory Committee</span>
-                  <p className="au-group-sub">Senior industry voices guiding the association's long-term direction and standards.</p>
+                <div className="au-section-heading-block">
+                  <span className="au-section-kicker">01 • GUIDING COUNCIL</span>
+                  <h2 className="au-section-title font-serif">Advisory Committee</h2>
+                  <p className="au-section-sub">Senior industry pioneers, trade veterans, and legal advocates guiding association standards and policy direction.</p>
                 </div>
-                <div className="au-persons-grid">
+                <div className="au-members-grid">
                   {[
-                    { name: 'Sh. Ashok Maheshwari',  img: 'ashok_maheshwari.jpg' },
-                    { name: 'Sh. Raju Mangodiwala',  img: 'raju_mangodiwala.jpg' },
-                    { name: 'Sh. Ankit Vaidya',       img: 'ankit_vaidya.jpg' },
-                    { name: 'Sh. Manish Khunteta',    img: 'manish_khunteta.jpg' },
-                    { name: 'Sh. Apoorv Nawalkha',    img: 'apoorv_nawalkha.jpg' },
-                    { name: 'Sh. Snehdeep Khyaliya',  img: 'snehdeep_khyaliya.jpg',  role: 'Criminal Advocate' },
-                    { name: 'Sh. Prateek Singh',       img: 'prateek_singh.jpg',       role: 'Civil Advocate' },
-                    { name: 'Sh. Sachin Kumar Gupta', img: 'sachin_gupta.jpg' },
+                    { name: 'Sh. Ashok Maheshwari',  role: 'Advisory Member', img: 'ashok_maheshwari.jpg' },
+                    { name: 'Sh. Raju Mangodiwala',  role: 'Advisory Member', img: 'raju_mangodiwala.jpg' },
+                    { name: 'Sh. Ankit Vaidya',       role: 'Advisory Member', img: 'ankit_vaidya.jpg' },
+                    { name: 'Sh. Manish Khunteta',    role: 'Advisory Member', img: 'manish_khunteta.jpg' },
+                    { name: 'Sh. Apoorv Nawalkha',    role: 'Advisory Member', img: 'apoorv_nawalkha.jpg' },
+                    { name: 'Sh. Snehdeep Khyaliya',  role: 'Criminal Advocate', img: 'snehdeep_khyaliya.jpg' },
+                    { name: 'Sh. Prateek Singh',      role: 'Civil Advocate', img: 'prateek_singh.jpg' },
+                    { name: 'Sh. Sachin Kumar Gupta', role: 'Advisory Member', img: 'sachin_gupta.jpg' },
                   ].map((m, i) => (
-                    <div key={i} className="au-person">
-                      <div className="au-avatar">
-                        <img src={`https://jsasilvershow.com/images/committee/${m.img}`} alt={m.name} />
+                    <div key={i} className="au-member-card">
+                      <div className="au-member-frame">
+                        <img 
+                          src={`https://jsasilvershow.com/images/committee/${m.img}`} 
+                          alt={m.name} 
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            const fb = e.currentTarget.parentElement.querySelector('.au-avatar-fallback');
+                            if (fb) fb.style.display = 'flex';
+                          }}
+                        />
+                        <div className="au-avatar-fallback">
+                          <span>{m.name.replace(/^(Sh\.|Dr\.)\s*/, '').split(' ').map(n => n[0]).slice(0, 2).join('')}</span>
+                        </div>
                       </div>
-                      <p className="au-pname">{m.name}</p>
-                      {m.role && <span className="au-prole">{m.role}</span>}
+                      <div className="au-member-body">
+                        <h3 className="au-member-name font-serif">{m.name}</h3>
+                        <span className="au-member-role-capsule">{m.role}</span>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -922,15 +1046,18 @@ export default function App() {
             </div>
           </section>
 
-          {/* BOARD OF TRUSTEES */}
-          <section className="au-section">
+          {/* ========================================================
+              SECTION 2: BOARD OF TRUSTEES
+              ======================================================== */}
+          <section className="au-main-section au-tinted">
             <div className="container">
               <RevealSection>
-                <div className="au-group-head">
-                  <span className="au-pill au-pill--pink">Board of Trustees</span>
-                  <p className="au-group-sub">The core team steering JSA Silver Show 2026 — planning, operations, and community trust.</p>
+                <div className="au-section-heading-block">
+                  <span className="au-section-kicker">02 • EXECUTIVE LEADERSHIP</span>
+                  <h2 className="au-section-title font-serif">Board of Trustees</h2>
+                  <p className="au-section-sub">The core executive team steering JSA Silver Show 2026 — strategic planning, industry governance, and operational integrity.</p>
                 </div>
-                <div className="au-trustees">
+                <div className="au-members-grid">
                   {[
                     { name: 'Ujjwal Derewala',     role: 'Chairman',                        quote: 'With a focus on growth and global reach, Jaipur Silver Show stands as a key initiative for the silver industry.',               img: 'ujjwal_derewala.jpg' },
                     { name: 'Abhineet Boochra',    role: 'Vice Chairman',                   quote: 'Jaipur Silver Show reflects the strength and legacy of our silver industry. We are committed to an exceptional experience.',       img: '2. ABHINEET BOOCHRA VICE, CHAIRMAN.JPG' },
@@ -943,14 +1070,28 @@ export default function App() {
                     { name: 'Shubham Agarwal',     role: 'Union Secretary',                 quote: 'We strive to unite the industry and create a strong platform for collaboration.',                                                 img: '9. SHUBHAM AGARWAL, UNION SECRETARY.JPG' },
                     { name: 'Kushal Khunteta',     role: 'Union Secretary',                 quote: 'Our aim is to strengthen industry relations and encourage growth through this platform.',                                         img: '10. KUSHAL KHUNTETA, UNION SECRETARY.JPG' },
                   ].map((t, i) => (
-                    <div key={i} className="au-trustee">
-                      <div className="au-trustee-photo">
-                        <img src={`https://jsasilvershow.com/images/committee/${t.img}`} alt={t.name} />
+                    <div key={i} className="au-member-card">
+                      <div className="au-member-frame">
+                        <img 
+                          src={`https://jsasilvershow.com/images/committee/${t.img}`} 
+                          alt={t.name} 
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            const fb = e.currentTarget.parentElement.querySelector('.au-avatar-fallback');
+                            if (fb) fb.style.display = 'flex';
+                          }}
+                        />
+                        <div className="au-avatar-fallback">
+                          <span>{t.name.replace(/^(Sh\.|Dr\.)\s*/, '').split(' ').map(n => n[0]).slice(0, 2).join('')}</span>
+                        </div>
                       </div>
-                      <div className="au-trustee-body">
-                        <p className="au-tname">{t.name}</p>
-                        <span className="au-trole">{t.role}</span>
-                        <p className="au-tquote">"{t.quote}"</p>
+                      <div className="au-member-body">
+                        <h3 className="au-member-name font-serif">{t.name}</h3>
+                        <span className="au-member-role-capsule">{t.role}</span>
+                        {t.quote && (
+                          <p className="au-member-quote">"{t.quote}"</p>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -959,33 +1100,51 @@ export default function App() {
             </div>
           </section>
 
-          {/* SHOW COMMITTEE */}
-          <section className="au-section au-tinted">
+          {/* ========================================================
+              SECTION 3: SHOW COMMITTEE
+              ======================================================== */}
+          <section className="au-main-section">
             <div className="container">
               <RevealSection>
-                <div className="au-group-head">
-                  <span className="au-pill au-pill--blue">Show Committee</span>
-                  <p className="au-group-sub">The on-ground team ensuring every detail of the show runs smoothly.</p>
+                <div className="au-section-heading-block">
+                  <span className="au-section-kicker">03 • EVENT ORGANIZING TEAM</span>
+                  <h2 className="au-section-title font-serif">Show Committee</h2>
+                  <p className="au-section-sub">The dynamic on-ground committee managing booth logistics, exhibitor coordination, and buyer hospitality.</p>
                 </div>
-                <div className="au-persons-grid">
+                <div className="au-members-grid">
                   {[
-                    { name: 'Amit Maheshwari',      img: 'amit_maheshwari.jpg' },
-                    { name: 'Aashish Khandelwal',   img: 'aashish_khandelwal.jpg' },
-                    { name: 'Rambabu Natani',        img: 'rambabu_natani.jpg' },
-                    { name: 'Anshul Soni',           img: 'anshul_soni.jpg' },
-                    { name: 'Saloni Parasrampuria',  img: 'saloni_parasrampuria.jpg' },
-                    { name: 'Neeraj Jain',           img: 'neeraj_jain.jpg' },
-                    { name: 'Alok Katta',            img: 'alok_katta.jpg' },
-                    { name: 'Vipin Gupta',           img: 'vipin_gupta.jpg' },
-                    { name: 'Ramanuj Saraf',         img: 'ramanuj_saraf.jpg' },
-                    { name: 'Tribhuvan Agarwal',     img: 'tribhuvan_agarwal.jpg' },
-                    { name: 'Vikas Soni',            img: 'vikas_soni.jpg' },
+                    { name: 'Amit Maheshwari',      role: 'Show Committee', img: 'amit_maheshwari.jpg' },
+                    { name: 'Aashish Khandelwal',   role: 'Show Committee', img: 'aashish_khandelwal.jpg' },
+                    { name: 'Rambabu Natani',        role: 'Show Committee', img: 'rambabu_natani.jpg' },
+                    { name: 'Anshul Soni',           role: 'Show Committee', img: 'anshul_soni.jpg' },
+                    { name: 'Saloni Parasrampuria',  role: 'Show Committee', img: 'saloni_parasrampuria.jpg' },
+                    { name: 'Neeraj Jain',           role: 'Show Committee', img: 'neeraj_jain.jpg' },
+                    { name: 'Alok Katta',            role: 'Show Committee', img: 'alok_katta.jpg' },
+                    { name: 'Vipin Gupta',           role: 'Show Committee', img: 'vipin_gupta.jpg' },
+                    { name: 'Ramanuj Saraf',         role: 'Show Committee', img: 'ramanuj_saraf.jpg' },
+                    { name: 'Tribhuvan Agarwal',     role: 'Show Committee', img: 'tribhuvan_agarwal.jpg' },
+                    { name: 'Vikas Soni',            role: 'Show Committee', img: 'vikas_soni.jpg' },
                   ].map((m, i) => (
-                    <div key={i} className="au-person">
-                      <div className="au-avatar au-avatar--blue">
-                        <img src={`https://jsasilvershow.com/images/committee/${m.img}`} alt={m.name} />
+                    <div key={i} className="au-member-card">
+                      <div className="au-member-frame">
+                        <img 
+                          src={`https://jsasilvershow.com/images/committee/${m.img}`} 
+                          alt={m.name} 
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            const fb = e.currentTarget.parentElement.querySelector('.au-avatar-fallback');
+                            if (fb) fb.style.display = 'flex';
+                          }}
+                        />
+                        <div className="au-avatar-fallback">
+                          <span>{m.name.replace(/^(Sh\.|Dr\.)\s*/, '').split(' ').map(n => n[0]).slice(0, 2).join('')}</span>
+                        </div>
                       </div>
-                      <p className="au-pname">{m.name}</p>
+                      <div className="au-member-body">
+                        <h3 className="au-member-name font-serif">{m.name}</h3>
+                        <span className="au-member-role-capsule">{m.role}</span>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -998,110 +1157,513 @@ export default function App() {
       )}
 
       {/* ========================================================
-          PAGE 3: EXHIBITOR ALERTS
+          PAGE 3: EXHIBITORS PORTAL & LOGISTICS (CAPSULE THEMED)
           ======================================================== */}
       {currentPage === 'exhibitor-alerts' && (
-        <main className="page-content">
-          <div className="page-header-minimal">
+        <main className="page-content exhibitor-page-root">
+          {/* Hero Header */}
+          <div className="portal-hero-capsule">
             <div className="container">
               <RevealSection>
-                <span className="section-kicker">NOTIFICATIONS</span>
-                <h1 className="page-title font-serif">Exhibitor Alerts</h1>
-                <p className="page-lead">Key announcements regarding stall possession, setups, and logistics.</p>
-              </RevealSection>
-            </div>
-          </div>
-
-          <div className="section-space">
-            <div className="container max-w-content">
-              <RevealSection delay="delay-1">
-                <div className="alert-row">
-                  <div className="alert-meta-box">
-                    <span className="a-tag">ALLOCATION</span>
-                    <span className="a-date">21 NOV</span>
-                  </div>
-                  <div className="alert-text">
-                    <h3 className="font-serif alert-title">Booth Possession & Decoration Schedule</h3>
-                    <p className="alert-desc">
-                      Exhibitors can begin booth setups starting 21st November from 9:00 AM at Birla Auditorium. Please carry your official possession slip.
-                    </p>
-                    <a href="https://jsasilvershow.com/exhibitor-intent-form" target="_blank" rel="noopener noreferrer" className="link-arrow">
-                      <span>Fill Exhibitor Intent Form</span>
+                <div className="portal-hero-content">
+                  <span className="portal-pill-badge">
+                    <Sparkles size={14} />
+                    <span>EXHIBITOR CONCOURSE &amp; STALL BOOKING</span>
+                  </span>
+                  <h1 className="portal-hero-title font-serif">
+                    Exhibitor Guide &amp; Space Booking
+                  </h1>
+                  <p className="portal-hero-lead">
+                    Showcase your collections to over 10,000+ verified retail showroom owners, wholesale distributors, and export buying houses across India.
+                  </p>
+                  <div className="portal-hero-actions">
+                    <button 
+                      onClick={() => goToRegister('exhibitor')}
+                      className="btn-portal-primary"
+                    >
+                      <Store size={15} />
+                      <span>BOOK STALL / SUBMIT INTENT</span>
                       <ArrowRight size={14} />
+                    </button>
+                    <a 
+                      href="#booth-specs" 
+                      className="btn-portal-secondary"
+                    >
+                      <LayoutGrid size={15} />
+                      <span>VIEW STALL CATEGORIES</span>
                     </a>
                   </div>
                 </div>
               </RevealSection>
+            </div>
+          </div>
 
-              <RevealSection delay="delay-2">
-                <div className="alert-row">
-                  <div className="alert-meta-box">
-                    <span className="a-tag">SECURITY</span>
-                    <span className="a-date">22-24 NOV</span>
+          {/* Quick Metrics Strip */}
+          <div className="portal-metrics-section">
+            <div className="container">
+              <RevealSection>
+                <div className="portal-metrics-grid">
+                  <div className="metric-capsule-item">
+                    <div className="metric-num font-serif">175+</div>
+                    <div className="metric-label">Leading Silver Brands</div>
                   </div>
-                  <div className="alert-text">
-                    <h3 className="font-serif alert-title">Complimentary On-Site Armed Vaulting</h3>
-                    <p className="alert-desc">
-                      High-security vaulting facilities are available inside Birla Auditorium for overnight jewelry storage for all registered exhibitors.
-                    </p>
+                  <div className="metric-capsule-item">
+                    <div className="metric-num font-serif">3 Halls</div>
+                    <div className="metric-label">World-Class AC Layout</div>
+                  </div>
+                  <div className="metric-capsule-item">
+                    <div className="metric-num font-serif">10,000+</div>
+                    <div className="metric-label">Verified B2B Buyers</div>
+                  </div>
+                  <div className="metric-capsule-item">
+                    <div className="metric-num font-serif">₹0</div>
+                    <div className="metric-label">On-Site Armed Vaulting Fee</div>
                   </div>
                 </div>
               </RevealSection>
+            </div>
+          </div>
+
+          {/* Stall Specifications & Categories */}
+          <div id="booth-specs" className="portal-content-section">
+            <div className="container">
+              <RevealSection>
+                <div className="portal-section-head">
+                  <span className="portal-section-kicker">STALL PACKAGES</span>
+                  <h2 className="portal-section-title font-serif">Exhibition Stall Categories</h2>
+                  <p className="portal-section-subtitle">Flexible space configurations built to elevate your brand presence at Birla Auditorium.</p>
+                </div>
+
+                <div className="portal-cards-grid three-col">
+                  <div className="portal-capsule-card featured-stall">
+                    <div className="stall-badge-pill">MOST POPULAR</div>
+                    <div className="stall-size font-serif">9 sq.m / 18 sq.m</div>
+                    <h3 className="stall-name">Standard Shell Scheme</h3>
+                    <p className="stall-desc">Turnkey octanorm booth fully equipped for instant retail &amp; wholesale showcase.</p>
+                    <ul className="stall-perks-list">
+                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Octanorm modular walls &amp; company fascia board</span></li>
+                      <li><CheckCircle2 size={15} className="check-ico" /> <span>3 spotlight fixtures &amp; 5A multi-power socket</span></li>
+                      <li><CheckCircle2 size={15} className="check-ico" /> <span>1 lockable glass display counter &amp; 2 chairs</span></li>
+                      <li><CheckCircle2 size={15} className="check-ico" /> <span>4 complimentary exhibitor access badges</span></li>
+                    </ul>
+                    <button onClick={() => goToRegister('exhibitor')} className="btn-stall-select">
+                      <span>Reserve Shell Scheme</span>
+                      <ArrowRight size={14} />
+                    </button>
+                  </div>
+
+                  <div className="portal-capsule-card">
+                    <div className="stall-badge-pill premium">FLAGSHIP SPACE</div>
+                    <div className="stall-size font-serif">36 sq.m – 72 sq.m</div>
+                    <h3 className="stall-name">Bare / Island Pavilion</h3>
+                    <p className="stall-desc">Complete architectural freedom for custom mezzanine &amp; luxury brand design.</p>
+                    <ul className="stall-perks-list">
+                      <li><CheckCircle2 size={15} className="check-ico" /> <span>4-side open or 3-side open prime corner locations</span></li>
+                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Dedicated industrial high-capacity power load</span></li>
+                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Priority buyer lounge reservations &amp; catering</span></li>
+                      <li><CheckCircle2 size={15} className="check-ico" /> <span>8 complimentary exhibitor access badges</span></li>
+                    </ul>
+                    <button onClick={() => goToRegister('exhibitor')} className="btn-stall-select">
+                      <span>Request Bare Space</span>
+                      <ArrowRight size={14} />
+                    </button>
+                  </div>
+
+                  <div className="portal-capsule-card">
+                    <div className="stall-badge-pill craft">HERITAGE SUBSIDY</div>
+                    <div className="stall-size font-serif">Shared Artisan Pod</div>
+                    <h3 className="stall-name">Master Karigar Pavilion</h3>
+                    <p className="stall-desc">Subsidized collective space dedicated to traditional Jaipur filigree &amp; heritage silversmiths.</p>
+                    <ul className="stall-perks-list">
+                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Curated showcase for certified handmade silver</span></li>
+                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Subsidized booth pricing supported by JSA trust</span></li>
+                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Direct exposure to pan-India boutique retail buyers</span></li>
+                      <li><CheckCircle2 size={15} className="check-ico" /> <span>2 complimentary artisan exhibitor passes</span></li>
+                    </ul>
+                    <button onClick={() => goToRegister('exhibitor')} className="btn-stall-select">
+                      <span>Apply as Artisan</span>
+                      <ArrowRight size={14} />
+                    </button>
+                  </div>
+                </div>
+              </RevealSection>
+            </div>
+          </div>
+
+          {/* Exhibitor Operational Timeline */}
+          <div className="portal-content-section au-tinted">
+            <div className="container">
+              <RevealSection>
+                <div className="portal-section-head">
+                  <span className="portal-section-kicker">KEY DEADLINES</span>
+                  <h2 className="portal-section-title font-serif">Exhibitor Timeline &amp; Possession</h2>
+                  <p className="portal-section-subtitle">Critical milestones to ensure effortless setup, vaulting, and exhibition operations.</p>
+                </div>
+
+                <div className="portal-timeline-stack">
+                  <div className="timeline-capsule-row">
+                    <div className="timeline-date-capsule">
+                      <Calendar size={15} />
+                      <span>21 NOV • 09:00 AM</span>
+                    </div>
+                    <div className="timeline-info-box">
+                      <h4 className="timeline-h4 font-serif">Booth Handover &amp; Decoration Setup</h4>
+                      <p className="timeline-p">
+                        Exhibitors can take physical possession of allocated stalls at Birla Auditorium. Display arrangements, branding posters, and lighting fixtures must be completed by 8:00 PM.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="timeline-capsule-row">
+                    <div className="timeline-date-capsule">
+                      <Lock size={15} />
+                      <span>21 NOV • 06:00 PM</span>
+                    </div>
+                    <div className="timeline-info-box">
+                      <h4 className="timeline-h4 font-serif">Vaulting Deposit Window Opens</h4>
+                      <p className="timeline-p">
+                        Complimentary on-site armed vault opens for overnight jewelry safe-keeping. Strict dual-custody verification slips will be issued for overnight stock.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="timeline-capsule-row highlight">
+                    <div className="timeline-date-capsule pink">
+                      <Sparkles size={15} />
+                      <span>22 – 24 NOV • 10:00 AM</span>
+                    </div>
+                    <div className="timeline-info-box">
+                      <h4 className="timeline-h4 font-serif">Exhibition Open to Trade Buyers</h4>
+                      <p className="timeline-p">
+                        Three full days of high-velocity wholesale dealmaking, sourcing meetings, and bullion transactions across Hall A, B, and C.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="timeline-capsule-row">
+                    <div className="timeline-date-capsule">
+                      <Clock size={15} />
+                      <span>24 NOV • 07:30 PM</span>
+                    </div>
+                    <div className="timeline-info-box">
+                      <h4 className="timeline-h4 font-serif">Show Conclusion &amp; Stock Clearance</h4>
+                      <p className="timeline-p">
+                        Official packing and booth hand-back protocol starts under security surveillance. Gate passes will be stamped upon verification of exhibition clearances.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </RevealSection>
+            </div>
+          </div>
+
+          {/* Exclusive Exhibitor Amenities */}
+          <div className="portal-content-section">
+            <div className="container">
+              <RevealSection>
+                <div className="portal-section-head">
+                  <span className="portal-section-kicker">PREMIUM INFRASTRUCTURE</span>
+                  <h2 className="portal-section-title font-serif">Exhibitor Privileges &amp; Security</h2>
+                  <p className="portal-section-subtitle">World-class facilities engineered for seamless high-value silver transactions.</p>
+                </div>
+
+                <div className="portal-amenities-grid">
+                  <div className="amenity-capsule-card">
+                    <div className="amenity-ico-wrap"><Lock size={24} /></div>
+                    <h3 className="amenity-title">24/7 Armed Guarded Vaults</h3>
+                    <p className="amenity-desc">Complimentary reinforced vaulting facility inside Birla Auditorium with CCTV recording and dual-key custody.</p>
+                  </div>
+
+                  <div className="amenity-capsule-card">
+                    <div className="amenity-ico-wrap"><Coffee size={24} /></div>
+                    <h3 className="amenity-title">VIP B2B Sourcing Lounge</h3>
+                    <p className="amenity-desc">Air-conditioned private meeting pods with high-speed WiFi and refreshments to finalize large bulk retail orders.</p>
+                  </div>
+
+                  <div className="amenity-capsule-card">
+                    <div className="amenity-ico-wrap"><BadgeCheck size={24} /></div>
+                    <h3 className="amenity-title">Express Badge Clearance</h3>
+                    <p className="amenity-desc">Dedicated exhibitor badge registration counters for you and your staff with immediate barcode laminate issuance.</p>
+                  </div>
+
+                  <div className="amenity-capsule-card">
+                    <div className="amenity-ico-wrap"><Globe2 size={24} /></div>
+                    <h3 className="amenity-title">National Buyer Directory</h3>
+                    <p className="amenity-desc">Your company details published in the official JSA 2026 Directory distributed to 5,000+ top jewelry chains across India.</p>
+                  </div>
+                </div>
+              </RevealSection>
+            </div>
+          </div>
+
+          {/* Bottom High-Converting CTA Capsule */}
+          <div className="portal-cta-wrap">
+            <div className="container">
+              <div className="portal-cta-capsule">
+                <div className="portal-cta-text">
+                  <span className="cta-kicker">LIMITED BOOTHS REMAINING</span>
+                  <h2 className="cta-h2 font-serif">Ready to Exhibit at Jaipur Silver Show 2026?</h2>
+                  <p className="cta-p">Submit your stall preference now to lock early-bird booth locations and priority hall allotments.</p>
+                </div>
+                <div className="portal-cta-actions">
+                  <button onClick={() => goToRegister('exhibitor')} className="btn-cta-primary">
+                    <span>Submit Exhibitor Intent Form</span>
+                    <ArrowRight size={15} />
+                  </button>
+                  <button onClick={() => setCurrentPage('contact')} className="btn-cta-secondary">
+                    <span>Talk to Show Secretariat</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </main>
       )}
 
       {/* ========================================================
-          PAGE 4: VISITOR ALERTS
+          PAGE 4: TRADE VISITORS PORTAL & GUIDE (CAPSULE THEMED)
           ======================================================== */}
       {currentPage === 'visitor-alerts' && (
-        <main className="page-content">
-          <div className="page-header-minimal">
+        <main className="page-content visitor-page-root">
+          {/* Hero Header */}
+          <div className="portal-hero-capsule visitor-hero">
             <div className="container">
               <RevealSection>
-                <span className="section-kicker">NOTIFICATIONS</span>
-                <h1 className="page-title font-serif">Visitor Alerts</h1>
-                <p className="page-lead">Guidelines, entry timings, and digital badge information.</p>
+                <div className="portal-hero-content">
+                  <span className="portal-pill-badge visitor-badge">
+                    <Sparkles size={14} />
+                    <span>COMPLIMENTARY TRADE ACCREDITATION • JSA 2026</span>
+                  </span>
+                  <h1 className="portal-hero-title font-serif">
+                    Trade Visitor Guide &amp; Express Pass
+                  </h1>
+                  <p className="portal-hero-lead">
+                    Connect directly with 175+ verified silver jewelry manufacturers, bullion houses, and master artisans under one roof at Birla Auditorium, Jaipur.
+                  </p>
+                  <div className="portal-hero-actions">
+                    <button 
+                      onClick={() => goToRegister('visitor')}
+                      className="btn-portal-primary"
+                    >
+                      <BadgeCheck size={16} />
+                      <span>GET FREE VISITOR PASS (INSTANT QR)</span>
+                      <ArrowRight size={14} />
+                    </button>
+                    <a 
+                      href="#visitor-halls" 
+                      className="btn-portal-secondary"
+                    >
+                      <LayoutGrid size={15} />
+                      <span>EXPLORE 3 EXHIBITION HALLS</span>
+                    </a>
+                  </div>
+                </div>
               </RevealSection>
             </div>
           </div>
 
-          <div className="section-space">
-            <div className="container max-w-content">
-              <RevealSection delay="delay-1">
-                <div className="alert-row">
-                  <div className="alert-meta-box">
-                    <span className="a-tag">ENTRY PASS</span>
-                    <span className="a-date">22-24 NOV</span>
+          {/* Quick Metrics Strip */}
+          <div className="portal-metrics-section">
+            <div className="container">
+              <RevealSection>
+                <div className="portal-metrics-grid">
+                  <div className="metric-capsule-item">
+                    <div className="metric-num font-serif">FREE</div>
+                    <div className="metric-label">Complimentary Trade Entry</div>
                   </div>
-                  <div className="alert-text">
-                    <h3 className="font-serif alert-title">Express Visitor Registration & Digital Passes</h3>
-                    <p className="alert-desc">
-                      Pre-register online to receive your fast-track digital QR entry pass directly on SMS/Email for instant badge printing at Gate 1 and Gate 2.
-                    </p>
-                    <button onClick={goToRegister} className="btn-solid mt-3">
-                      <span>Register as Visitor (Free)</span>
-                      <ArrowRight size={13} />
-                    </button>
+                  <div className="metric-capsule-item">
+                    <div className="metric-num font-serif">300+</div>
+                    <div className="metric-label">Designer Exhibition Booths</div>
+                  </div>
+                  <div className="metric-capsule-item">
+                    <div className="metric-num font-serif">Direct</div>
+                    <div className="metric-label">Factory Wholesale Pricing</div>
+                  </div>
+                  <div className="metric-capsule-item">
+                    <div className="metric-num font-serif">Instant</div>
+                    <div className="metric-label">Digital QR Badge on Phone</div>
                   </div>
                 </div>
               </RevealSection>
+            </div>
+          </div>
 
-              <RevealSection delay="delay-2">
-                <div className="alert-row">
-                  <div className="alert-meta-box">
-                    <span className="a-tag">TIMINGS</span>
-                    <span className="a-date">10 AM - 7 PM</span>
+          {/* What to Discover Across 3 Halls */}
+          <div id="visitor-halls" className="portal-content-section">
+            <div className="container">
+              <RevealSection>
+                <div className="portal-section-head">
+                  <span className="portal-section-kicker">SOURCING DIRECTORY</span>
+                  <h2 className="portal-section-title font-serif">What You Will Discover</h2>
+                  <p className="portal-section-subtitle">Curated zones spanning handcrafted royal heirlooms to high-tech casting innovations.</p>
+                </div>
+
+                <div className="portal-cards-grid three-col">
+                  <div className="portal-capsule-card hall-card-a">
+                    <div className="hall-tag-capsule pill-a">HALL A</div>
+                    <h3 className="hall-card-name font-serif">Fine &amp; Royal Jewellery</h3>
+                    <p className="hall-card-desc">Bridal silver sets, antique kundan jadau, intricate filigree, temple ornaments, and 925 sterling daily wear.</p>
+                    <div className="hall-card-highlights">
+                      <span className="highlight-pill">Antique Filigree</span>
+                      <span className="highlight-pill">Bridal Necklaces</span>
+                      <span className="highlight-pill">Sterling CZ Lines</span>
+                      <span className="highlight-pill">Export Collections</span>
+                    </div>
                   </div>
-                  <div className="alert-text">
-                    <h3 className="font-serif alert-title">Exhibition Visiting Hours</h3>
-                    <p className="alert-desc">
-                      Exhibition opens daily from 10:00 AM to 7:00 PM. Trade visitor lounges will be accessible throughout the day.
-                    </p>
+
+                  <div className="portal-capsule-card hall-card-b">
+                    <div className="hall-tag-capsule pill-b">HALL B</div>
+                    <h3 className="hall-card-name font-serif">Artifacts &amp; Silverware</h3>
+                    <p className="hall-card-desc">Royal dinnerware, hand-carved temple idols, ceremonial pooja silver, commemorative coins, and corporate gifting.</p>
+                    <div className="hall-card-highlights">
+                      <span className="highlight-pill">Royal Dinner Sets</span>
+                      <span className="highlight-pill">Temple Idols</span>
+                      <span className="highlight-pill">Bullion Coins</span>
+                      <span className="highlight-pill">Corporate Gifting</span>
+                    </div>
+                  </div>
+
+                  <div className="portal-capsule-card hall-card-c">
+                    <div className="hall-tag-capsule pill-c">HALL C</div>
+                    <h3 className="hall-card-name font-serif">Machinery &amp; Allied Tech</h3>
+                    <p className="hall-card-desc">Laser soldering, 3D wax printers, induction casting furnaces, purity spectrometers, and BIS hallmarking equipment.</p>
+                    <div className="hall-card-highlights">
+                      <span className="highlight-pill">Laser Welding</span>
+                      <span className="highlight-pill">3D CAD Casting</span>
+                      <span className="highlight-pill">XRF Spectrometers</span>
+                      <span className="highlight-pill">Packaging &amp; Trays</span>
+                    </div>
                   </div>
                 </div>
               </RevealSection>
+            </div>
+          </div>
+
+          {/* Visiting Protocol & Essential Guidelines */}
+          <div className="portal-content-section au-tinted">
+            <div className="container">
+              <RevealSection>
+                <div className="portal-section-head">
+                  <span className="portal-section-kicker">VISITING GUIDELINES</span>
+                  <h2 className="portal-section-title font-serif">Entry Schedule &amp; Gates</h2>
+                  <p className="portal-section-subtitle">Smooth entry procedures for trade delegates, sourcing professionals, and store owners.</p>
+                </div>
+
+                <div className="portal-timeline-stack">
+                  <div className="timeline-capsule-row">
+                    <div className="timeline-date-capsule">
+                      <Calendar size={15} />
+                      <span>22 – 24 NOV 2026</span>
+                    </div>
+                    <div className="timeline-info-box">
+                      <h4 className="timeline-h4 font-serif">Dates &amp; Exhibition Visiting Hours</h4>
+                      <p className="timeline-p">
+                        Open daily from <strong>10:00 AM to 07:00 PM</strong>. Sourcing lounges and live trading pavilions remain active all three days.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="timeline-capsule-row">
+                    <div className="timeline-date-capsule">
+                      <MapPin size={15} />
+                      <span>GATE 1 &amp; GATE 2</span>
+                    </div>
+                    <div className="timeline-info-box">
+                      <h4 className="timeline-h4 font-serif">Birla Auditorium Entry Points</h4>
+                      <p className="timeline-p">
+                        Accredited visitors can access through Gate 1 (Statue Circle Main Gate) or Gate 2 (Bhawani Singh Marg). Dedicated badge printing kiosks are positioned at both foyers.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="timeline-capsule-row highlight">
+                    <div className="timeline-date-capsule pink">
+                      <BadgeCheck size={15} />
+                      <span>DIGITAL QR PASS</span>
+                    </div>
+                    <div className="timeline-info-box">
+                      <h4 className="timeline-h4 font-serif">15-Second Instant Badge Handover</h4>
+                      <p className="timeline-p">
+                        Pre-registered visitors show their digital mobile QR code at Counter #4 or Self-Scan Kiosk for instant visitor lanyard printing with zero queue waiting.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="timeline-capsule-row">
+                    <div className="timeline-date-capsule">
+                      <ShieldCheck size={15} />
+                      <span>BUSINESS ID MANDATORY</span>
+                    </div>
+                    <div className="timeline-info-box">
+                      <h4 className="timeline-h4 font-serif">Trade Accreditation Verification</h4>
+                      <p className="timeline-p">
+                        Please carry your business card (visiting card) or GST registration copy, along with an official government photo ID (Aadhar / PAN / Driving License).
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </RevealSection>
+            </div>
+          </div>
+
+          {/* Visitor Hospitality & Amenities */}
+          <div className="portal-content-section">
+            <div className="container">
+              <RevealSection>
+                <div className="portal-section-head">
+                  <span className="portal-section-kicker">HOSPITALITY</span>
+                  <h2 className="portal-section-title font-serif">Visitor Hospitality &amp; Services</h2>
+                  <p className="portal-section-subtitle">Engineered to make your sourcing trip productive, comfortable, and secure.</p>
+                </div>
+
+                <div className="portal-amenities-grid">
+                  <div className="amenity-capsule-card">
+                    <div className="amenity-ico-wrap"><Car size={24} /></div>
+                    <h3 className="amenity-title">Complimentary Valet Parking</h3>
+                    <p className="amenity-desc">Hassle-free parking inside Birla Auditorium grounds for all pre-registered trade delegates.</p>
+                  </div>
+
+                  <div className="amenity-capsule-card">
+                    <div className="amenity-ico-wrap"><Coffee size={24} /></div>
+                    <h3 className="amenity-title">B2B Trade Lounges &amp; Cafes</h3>
+                    <p className="amenity-desc">Relaxed seating zones with complimentary beverages for in-depth commercial negotiations.</p>
+                  </div>
+
+                  <div className="amenity-capsule-card">
+                    <div className="amenity-ico-wrap"><Scale size={24} /></div>
+                    <h3 className="amenity-title">Spot Purity Testing Desk</h3>
+                    <p className="amenity-desc">Free government standard purity testing on-site to verify 925 and 999 authenticity on purchases.</p>
+                  </div>
+
+                  <div className="amenity-capsule-card">
+                    <div className="amenity-ico-wrap"><Building size={24} /></div>
+                    <h3 className="amenity-title">Secure Insured Cargo Desks</h3>
+                    <p className="amenity-desc">On-site secure logistics and express transit services (BVC / Sequel) for wholesale stock transport.</p>
+                  </div>
+                </div>
+              </RevealSection>
+            </div>
+          </div>
+
+          {/* Bottom High-Converting CTA Capsule */}
+          <div className="portal-cta-wrap">
+            <div className="container">
+              <div className="portal-cta-capsule">
+                <div className="portal-cta-text">
+                  <span className="cta-kicker">DIRECT B2B ACCESS</span>
+                  <h2 className="cta-h2 font-serif">Pre-Register for Your Free Visitor Pass</h2>
+                  <p className="cta-p">Skip on-site lines and receive your instant digital badge directly on WhatsApp/Email.</p>
+                </div>
+                <div className="portal-cta-actions">
+                  <button onClick={() => goToRegister('visitor')} className="btn-cta-primary">
+                    <span>Register as Visitor (Free)</span>
+                    <ArrowRight size={15} />
+                  </button>
+                  <button onClick={() => setCurrentPage('contact')} className="btn-cta-secondary">
+                    <span>Contact Visitor Helpdesk</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </main>
@@ -1172,6 +1734,18 @@ export default function App() {
         </main>
       )}
 
+      {/* ========================================================
+          PAGE 6: DEDICATED CONTACT US
+          ======================================================== */}
+      {currentPage === 'contact' && (
+        <main className="page-content">
+          <ContactPage 
+            onGoHome={() => setCurrentPage('home')}
+            onGoToRegister={goToRegister}
+          />
+        </main>
+      )}
+
       {/* HIGH-AESTHETIC REGISTRATION CTA BANNER */}
       <section className="registration-cta-banner">
         <div className="container">
@@ -1189,21 +1763,19 @@ export default function App() {
               </p>
               <div className="cta-btn-cluster">
                 <button 
-                  onClick={goToRegister}
+                  onClick={() => goToRegister('visitor')}
                   className="btn-cta-primary"
                 >
                   <span>Register as Visitor (Free Pass)</span>
                   <ArrowRight size={16} />
                 </button>
-                <a 
-                  href="https://jsasilvershow.com/exhibitor-intent-form" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <button 
+                  onClick={() => goToRegister('exhibitor')} 
                   className="btn-cta-secondary"
                 >
                   <span>Book a Booth / Exhibitor Intent</span>
                   <ArrowUpRight size={15} />
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -1248,9 +1820,9 @@ export default function App() {
             <div className="footer-col">
               <h4 className="f-head">EXHIBITION</h4>
               <ul className="f-links">
-                <li><button onClick={goToRegister}>Visitor Pass Registration</button></li>
-                <li><a href="https://jsasilvershow.com/exhibitor-intent-form" target="_blank" rel="noopener noreferrer">Exhibitor Intent Form</a></li>
-                <li><a href="https://jsasilvershow.com/booths" target="_blank" rel="noopener noreferrer">Booths & Floor Plan</a></li>
+                <li><button onClick={() => goToRegister('visitor')}>Visitor Pass Registration</button></li>
+                <li><button onClick={() => goToRegister('exhibitor')}>Exhibitor Intent Form</button></li>
+                <li><button onClick={() => goToRegister('exhibitor')}>Booths & Floor Plan</button></li>
                 <li><button onClick={() => setCurrentPage('gallery')}>Exhibition Gallery</button></li>
               </ul>
             </div>
@@ -1262,6 +1834,7 @@ export default function App() {
                 <li><button onClick={() => setCurrentPage('about')}>About JSA</button></li>
                 <li><button onClick={() => setCurrentPage('exhibitor-alerts')}>Exhibitor Alerts</button></li>
                 <li><button onClick={() => setCurrentPage('visitor-alerts')}>Visitor Alerts</button></li>
+                <li><button onClick={() => setCurrentPage('contact')}>Contact Us Helpdesk</button></li>
                 <li><a href="https://jsasilvershow.com/" target="_blank" rel="noopener noreferrer">Live Bullion Benchmark</a></li>
               </ul>
             </div>
@@ -1312,28 +1885,6 @@ export default function App() {
           }}
           onCancel={() => setShowAdminLogin(false)}
         />
-      )}
-
-      {/* Video Modal Popup */}
-      {videoModalOpen && (
-        <div className="modal-backdrop animate-fade-in" onClick={() => setVideoModalOpen(false)}>
-          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setVideoModalOpen(false)}>
-              <X size={20} />
-            </button>
-            <div className="modal-media">
-              <iframe 
-                width="100%" 
-                height="450" 
-                src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1" 
-                title="Jaipur Silver Association Video" 
-                frameBorder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowFullScreen
-              ></iframe>
-            </div>
-          </div>
-        </div>
       )}
     </div>
   );

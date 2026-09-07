@@ -1271,3 +1271,52 @@
     text-align: center;
   }
 }
+
+/* --------------------------------------------------------------------------
+   ROLE TABS SWITCHER (VISITOR vs EXHIBITOR)
+   -------------------------------------------------------------------------- */
+.reg-role-tabs-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  background: rgba(20, 13, 22, 0.04);
+  padding: 0.45rem;
+  border-radius: 14px;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(20, 13, 22, 0.08);
+}
+
+.reg-role-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #666;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reg-role-tab:hover {
+  color: #140d16;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.reg-role-tab.active {
+  background: #ffffff;
+  color: #F875AA;
+  box-shadow: 0 4px 14px rgba(248, 117, 170, 0.2);
+  font-weight: 700;
+}
+
+@media (max-width: 600px) {
+  .reg-role-tabs-container {
+    grid-template-columns: 1fr;
+  }
+}
+

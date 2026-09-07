@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft,
   CheckCircle2,
@@ -21,7 +21,16 @@ import {
 import { saveInquiry, processFileAttachment } from './db';
 import './RegistrationPage.css';
 
-export default function RegistrationPage({ onGoHome }) {
+export default function RegistrationPage({ onGoHome, initialRole = 'visitor' }) {
+  // Role State: 'visitor' | 'exhibitor'
+  const [regRole, setRegRole] = useState(initialRole === 'exhibitor' ? 'exhibitor' : 'visitor');
+
+  useEffect(() => {
+    if (initialRole) {
+      setRegRole(initialRole === 'exhibitor' ? 'exhibitor' : 'visitor');
+    }
+  }, [initialRole]);
+
   // Form State
   const [residentType, setResidentType] = useState('indian'); // 'indian' | 'nri'
   const [formData, setFormData] = useState({
@@ -37,6 +46,7 @@ export default function RegistrationPage({ onGoHome }) {
     address: '',
     passportNumber: '',
     passportExpiry: '',
+    stallRequirement: 'Standard Booth (9 sq.m - 3x3m)',
     agreement: false
   });
 
@@ -223,8 +233,8 @@ export default function RegistrationPage({ onGoHome }) {
       }
     }
 
-    // Photo
-    if (!files.photo) {
+    // Photo: mandatory for visitor badge printing, optional for exhibitor intent
+    if (regRole === 'visitor' && !files.photo) {
       newErrors.photo = 'Visitor portrait photo is required for badge';
     }
 
@@ -278,9 +288,10 @@ export default function RegistrationPage({ onGoHome }) {
         passport_number: formData.passportNumber.trim().toUpperCase(),
         passport_expiry: formData.passportExpiry,
         business_categories: selectedCategories,
-        type: 'Trade Visitor Pass',
-        topicId: 'visitor',
-        source: 'Visitor Registration Portal',
+        stall_requirement: regRole === 'exhibitor' ? formData.stallRequirement : undefined,
+        type: regRole === 'exhibitor' ? 'Exhibitor Space Intent' : 'Trade Visitor Pass',
+        topicId: regRole === 'exhibitor' ? 'exhibitor' : 'visitor',
+        source: regRole === 'exhibitor' ? 'Exhibitor Intent Portal' : 'Visitor Registration Portal',
         attachments: attachments
       };
 
@@ -330,7 +341,11 @@ export default function RegistrationPage({ onGoHome }) {
               </div>
               <div className="docket-status-text">
                 <strong>Pre-Registration Successfully Confirmed</strong>
-                <p>Your official visitor dossier has been verified and registered for the Jaipur Silver Show 2026.</p>
+                <p>
+                  {registrationSuccess.type === 'Exhibitor Space Intent'
+                    ? 'Your official exhibitor space intent docket has been registered for Jaipur Silver Show 2026.'
+                    : 'Your official visitor dossier has been verified and registered for the Jaipur Silver Show 2026.'}
+                </p>
               </div>
               <span className="docket-live-chip">CONFIRMED</span>
             </div>
@@ -344,7 +359,11 @@ export default function RegistrationPage({ onGoHome }) {
                   <div className="docket-brand-info">
                     <span className="docket-org-name">JAIPUR SILVER ASSOCIATION</span>
                     <h2 className="docket-event-title font-serif">Jaipur Silver Show 2026</h2>
-                    <span className="docket-event-sub">Official Visitor Accreditation Slip & E-Acknowledgment</span>
+                    <span className="docket-event-sub">
+                      {registrationSuccess.type === 'Exhibitor Space Intent'
+                        ? 'Official Exhibitor Intent Slip & E-Acknowledgment'
+                        : 'Official Visitor Accreditation Slip & E-Acknowledgment'}
+                    </span>
                   </div>
                 </div>
 
@@ -384,7 +403,11 @@ export default function RegistrationPage({ onGoHome }) {
                   <ShieldCheck size={15} className="meta-ico" />
                   <div>
                     <label>ACCESS TIER</label>
-                    <span>Complimentary B2B Buyer</span>
+                    <span>
+                      {registrationSuccess.type === 'Exhibitor Space Intent'
+                        ? 'Registered Exhibitor / Space Intent'
+                        : 'Complimentary B2B Buyer'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -443,6 +466,12 @@ export default function RegistrationPage({ onGoHome }) {
                         <div className="info-cell">
                           <label>Passport Number</label>
                           <span className="mono-text">{registrationSuccess.passport_number}</span>
+                        </div>
+                      )}
+                      {registrationSuccess.stall_requirement && (
+                        <div className="info-cell">
+                          <label>Stall Requirement</label>
+                          <span className="mono-text">{registrationSuccess.stall_requirement}</span>
                         </div>
                       )}
                     </div>
@@ -526,6 +555,7 @@ export default function RegistrationPage({ onGoHome }) {
                     address: '',
                     passportNumber: '',
                     passportExpiry: '',
+                    stallRequirement: 'Standard Booth (9 sq.m - 3x3m)',
                     agreement: false
                   });
                   setSelectedCategories([]);
@@ -533,7 +563,7 @@ export default function RegistrationPage({ onGoHome }) {
                 }} 
                 className="btn-docket-secondary"
               >
-                <span>Register Another Visitor</span>
+                <span>Register Another {registrationSuccess.type === 'Exhibitor Space Intent' ? 'Exhibitor' : 'Visitor'}</span>
               </button>
               <button onClick={onGoHome} className="btn-docket-back">
                 <ArrowLeft size={15} />
@@ -544,11 +574,37 @@ export default function RegistrationPage({ onGoHome }) {
         ) : (
           /* MAIN REGISTRATION FORM */
           <div className="reg-form-card">
+            {/* ROLE TAB SWITCHER: VISITOR PASS vs EXHIBITOR INTENT */}
+            <div className="reg-role-tabs-container">
+              <button
+                type="button"
+                className={`reg-role-tab ${regRole === 'visitor' ? 'active' : ''}`}
+                onClick={() => setRegRole('visitor')}
+              >
+                <User size={18} />
+                <span>Trade Visitor Pass (Free Entry)</span>
+              </button>
+              <button
+                type="button"
+                className={`reg-role-tab ${regRole === 'exhibitor' ? 'active' : ''}`}
+                onClick={() => setRegRole('exhibitor')}
+              >
+                <Building size={18} />
+                <span>Exhibitor Space Intent & Booking</span>
+              </button>
+            </div>
+
             <div className="reg-card-intro">
-              <span className="reg-badge-chip">FREE B2B ENTRY PASS</span>
-              <h1 className="reg-form-title font-serif">Trade Visitor Registration</h1>
+              <span className="reg-badge-chip">
+                {regRole === 'exhibitor' ? 'OFFICIAL EXHIBITOR INTENT 2026' : 'FREE B2B ENTRY PASS'}
+              </span>
+              <h1 className="reg-form-title font-serif">
+                {regRole === 'exhibitor' ? 'Exhibitor Space Intent Registration' : 'Trade Visitor Registration'}
+              </h1>
               <p className="reg-form-lead">
-                Pre-register online to receive your express digital pass for direct hall entry, sourcing lounges, and verified bullion trade pavilions at Birla Auditorium.
+                {regRole === 'exhibitor'
+                  ? 'Submit your stall intent to exhibit at Birla Auditorium. Showcase your silver jewellery, bullion, and craftsmanship to 10,000+ national and international buyers.'
+                  : 'Pre-register online to receive your express digital pass for direct hall entry, sourcing lounges, and verified bullion trade pavilions at Birla Auditorium.'}
               </p>
             </div>
 
@@ -701,6 +757,28 @@ export default function RegistrationPage({ onGoHome }) {
                       />
                     </div>
                   </div>
+
+                  {regRole === 'exhibitor' && (
+                    <div className="form-field full-width" style={{ gridColumn: '1 / -1' }}>
+                      <label htmlFor="reg_stall">Preferred Booth / Stall Size <span className="req">*</span></label>
+                      <div className="input-wrap">
+                        <Building size={16} className="input-icon" />
+                        <select 
+                          id="reg_stall"
+                          name="stallRequirement" 
+                          value={formData.stallRequirement} 
+                          onChange={handleInputChange}
+                          style={{ width: '100%', paddingLeft: '2.5rem', height: '46px', borderRadius: '8px', border: '1px solid var(--border-color, #ddd)', background: '#fff' }}
+                        >
+                          <option value="Standard Booth (9 sq.m - 3x3m)">Standard Booth (9 sq.m - 3x3m)</option>
+                          <option value="Executive Corner Booth (18 sq.m - 6x3m)">Executive Corner Booth (18 sq.m - 6x3m)</option>
+                          <option value="Premium Pavilion (36 sq.m - 6x6m)">Premium Pavilion (36 sq.m - 6x6m)</option>
+                          <option value="Bare Space / Custom Shell">Bare Space / Custom Shell</option>
+                          <option value="To Be Discussed with Committee">To Be Discussed with Committee</option>
+                        </select>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="form-field">
                     <label htmlFor="reg_country">Country <span className="req">*</span></label>
@@ -911,9 +989,12 @@ export default function RegistrationPage({ onGoHome }) {
                     </>
                   )}
 
-                  {/* VISITOR PORTRAIT PHOTO */}
+                  {/* VISITOR / EXHIBITOR BADGE PHOTO */}
                   <div className="form-field form-field-full">
-                    <label>Badge Photo <span className="req">*</span></label>
+                    <label>
+                      {regRole === 'exhibitor' ? 'Representative Portrait / Badge Photo (Optional)' : 'Visitor Badge Photo '}
+                      {regRole === 'visitor' && <span className="req">*</span>}
+                    </label>
                     {files.photo ? (
                       <div className="file-preview-card file-preview-photo">
                         <img src={files.photo.data} alt="Badge Preview" className="photo-thumb-preview" />
@@ -941,8 +1022,12 @@ export default function RegistrationPage({ onGoHome }) {
                           style={{ display: 'none' }}
                         />
                         <UploadCloud size={24} className="dropzone-icon" />
-                        <span className="dropzone-label">Upload Clear Visitor Portrait Photo</span>
-                        <span className="dropzone-hint">Clear front-facing portrait. No hats or sunglasses allowed.</span>
+                        <span className="dropzone-label">Upload Clear Portrait Photo</span>
+                        <span className="dropzone-hint">
+                          {regRole === 'exhibitor' 
+                            ? 'Optional portrait photo for your official exhibitor badge directory.' 
+                            : 'Clear front-facing portrait. No hats or sunglasses allowed.'}
+                        </span>
                       </label>
                     )}
                     {errors.photo && <span className="field-error">{errors.photo}</span>}
@@ -999,12 +1084,12 @@ export default function RegistrationPage({ onGoHome }) {
                     {isSubmitting ? (
                       <>
                         <span className="submit-spinner"></span>
-                        <span>Generating Digital Pass...</span>
+                        <span>{regRole === 'exhibitor' ? 'Submitting Exhibitor Intent...' : 'Generating Digital Pass...'}</span>
                       </>
                     ) : (
                       <>
                         <FileCheck size={18} />
-                        <span>Submit & Get Digital Visitor Pass</span>
+                        <span>{regRole === 'exhibitor' ? 'Submit Exhibitor Space Intent' : 'Submit & Get Digital Visitor Pass'}</span>
                       </>
                     )}
                   </button>
