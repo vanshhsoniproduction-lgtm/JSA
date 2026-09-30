@@ -36,14 +36,6 @@ import {
 } from 'lucide-react';
 import './App.css';
 
-import {
-  initStorage,
-  checkAdminAuth,
-  logoutAdmin
-} from './db';
-import AdminPanel from './AdminPanel';
-import AdminLogin from './AdminLogin';
-import RegistrationPage from './RegistrationPage';
 import ContactPage from './ContactPage';
 
 // Clean SVG Instagram Icon
@@ -97,7 +89,7 @@ function RevealSection({ children, className = "", delay = "" }) {
 }
 
 // Animated Synchronized Counter Component
-function CounterNumber({ endValue, duration = 2000, suffix = "+" }) {
+function CounterNumber({ endValue, duration = 2000, suffix = "+", suffixClassName = "" }) {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const hasAnimated = useRef(false);
@@ -141,55 +133,165 @@ function CounterNumber({ endValue, duration = 2000, suffix = "+" }) {
 
   return (
     <span ref={ref} className="counter-digit">
-      {count.toLocaleString('en-IN')}{suffix}
+      {count.toLocaleString('en-IN')}
+      {suffix && (
+        <span className={`counter-suffix ${suffixClassName}`.trim()}>
+          {suffix}
+        </span>
+      )}
     </span>
   );
 }
 
+const SUPPORTING_ASSOCIATIONS = [
+  { name: 'SH. RAJESH ROKDE', role: 'CHAIRMAN, GJC' },
+  { name: 'SH. AVINASH GUPTA', role: 'VICE CHAIRMAN, GJC' },
+  { name: 'SH. RAJU MANGODIWALA', role: 'PRESIDENT, JEWELLERS ASSOCIATION JAIPUR' },
+  { name: 'SH. KAILASH MITTAL', role: 'PRESIDENT, SARAFA TRADERS COMMITTEE, JAIPUR' },
+  { name: 'SH. DULI CHAND KAREL', role: 'CHAIRMAN, BHARTIYA SWARNKAR SANGH' },
+  { name: 'SH. KASHMIR SINGH RAJPUT', role: 'NATIONAL PRESIDENT, AKHIL BHARTIYA SWARNKAR SANGH' },
+  { name: 'SH. JAYANTILAL CHALLANI', role: 'PRESIDENT, JEWELLERS AND DIAMOND ASSOCIATION MADRAS' },
+  { name: 'SH. PV JOSE', role: 'CHIEF PATRON, JEWELLERY MANUFACTURERS ASSOCIATION, KERALA' },
+  { name: 'SH. NITESH AGARWAL', role: 'PRESIDENT, AGRA SARAFA ASSOCIATION' },
+  { name: 'SH. RAJESH TEJPAL RATHOD', role: 'PRESIDENT, KOLHAPUR SARAF VYAPARI SANGH' },
+  { name: 'SH. SURYA PRAKASH GUPTA', role: 'PRESIDENT, BADAUN SARAFA ASSOCIATION' },
+  { name: 'SH. RAM AVTAR VERMA', role: 'CHAIRMAN, TBJA DELHI' },
+  { name: 'SH. ANIL SINGHAL', role: 'PRESIDENT, NORTH DELHI JEWELLERS ASSOCIATION' },
+  { name: 'SH. RAJIV SHAHDEV', role: 'PRESIDENT, CHANDIGARH JEWELLERS ASSOCIATION' },
+  { name: 'SH. VARUN SURAJ CHAUHAN', role: 'PRESIDENT, CHANDIGARH SARAFA ASSOCIATION' },
+  { name: 'SH. MANISH KUMAR VERMA', role: 'PRESIDENT, LUCKNOW MAHANAGAR SARAFA ASSOCIATION' },
+  { name: 'SH. BASHIR ALI', role: 'PRESIDENT, ALL KASHMIR GOLD DEALERS ASSOCIATION' },
+  { name: 'SH. MAYANK KAPOOR', role: 'PRESIDENT, JAMMU JEWELLER ASSOCIATION' },
+  { name: 'SH. RAJKUMAR AGARWAL', role: 'PRESIDENT, BAREILLY SARAFA ASSOCIATION' },
+  { name: 'SH. ANAND RATHI', role: 'CHIEF PATRON, SARAFA COMMITTEE, KOTA' },
+  { name: 'SH. MOJI NUVAL', role: 'PRESIDENT, SHRI SARAFA SANSTHAN BUNDI' },
+  { name: 'SH. YASHWANT ANCHLIYA', role: 'PRESIDENT, SARAFA ASSOCIATION UDAIPUR' },
+  { name: 'SH. LALIT SONI', role: 'PRESIDENT, GEMS AND JEWELLERY HANDICRAFT SWARNKAR SANGH' },
+  { name: 'SH. JAIN SAMPATLAL KHABYA', role: 'PRESIDENT, DAGINA ASSOCIATION, AHMEDABAD' },
+  { name: 'SH. RAVI SHANKAR GAURI', role: 'PRESIDENT, GOLD MERCHANT ASSOCIATION SATNA' },
+  { name: 'SH. ANAND SONI', role: 'PRESIDENT, BHOPAL SARAFA ASSOCIATION' },
+  { name: 'SH. NARESH BALANI', role: 'CHAIRMAN, JMAIIE' }
+];
+
+const EXHIBITORS_LIST = [
+  "Aadiyogi Jewellers",
+  "Albeli jewellers",
+  "ARIES",
+  "balaji silver arts",
+  "Bhavy Sawariya Jewels",
+  "chandika pearls",
+  "CHHOTI BAI JEWELLERS",
+  "DBR GEMS",
+  "derewala gems and...",
+  "DIVINE JEWELS",
+  "divinity techno solutions",
+  "ELAUNT JEWELLRY",
+  "Fortune Charms Inc",
+  "gems india",
+  "gomes gems",
+  "GP SILVER",
+  "HINN THAR HASTSHILP",
+  "J P ENTERPRISES",
+  "jalash",
+  "Jawahar international",
+  "JIVA JEWELLERY",
+  "Kanak Gem & Jewelry",
+  "KARISH SILVER",
+  "KATTA'S GEMS & JEWELS",
+  "kay luxe",
+  "koshore motiwala",
+  "KRISHNAM JEWELLERS",
+  "LAAVI DHURV...",
+  "LASHKARI EXPORTS",
+  "lohiya's silver galleria p...",
+  "MAHAL JEWELS",
+  "Mahaveer Jewellery...",
+  "marvy jewels",
+  "MORCHANDRIKA...",
+  "My SILVERATI By MAGS...",
+  "New Photos",
+  "Nobel Gems and Jewels",
+  "PICHOLA PRIVATE...",
+  "Ratnavali Arts",
+  "RAVI JEWELLERS JAIPUR",
+  "riddhi jewel",
+  "Ridhi Siddhi Gem and...",
+  "RK Silver",
+  "SACHI DESIGN CREATION",
+  "shimla impex",
+  "SHREE DEREWALA...",
+  "SHREE GEMS &...",
+  "shree jaipur silver",
+  "silver source jewellery",
+  "sumanglam gold...",
+  "tarqash jewels",
+  "Tvasta 925 by Parth Silv...",
+  "twisha jewels",
+  "Vinayak Gem and..."
+];
+
+const NEWS_EVENTS = [
+  {
+    image: "/birla-auditorium.jpg",
+    tag: "Press Release",
+    date: "15 September 2026",
+    title: "Grand Launch: JSA Silver Show 2026 Announced at BM Birla Auditorium",
+    desc: "JSA Silver Show officially unveils the premier B2B expo roadmap, uniting over 175 leading silver manufacturers and 10,000 national trade buyers."
+  },
+  {
+    image: "/hero-slide-1.jpg",
+    tag: "Industry Milestone",
+    date: "24 September 2026",
+    title: "Nationwide Delegations: 25+ Sarafa Associations Extend Full Charter Support",
+    desc: "Apex jewellery bodies and regional Sarafa Sansthans across Delhi, Mumbai, Chennai, and Rajasthan unite to facilitate pan-India retail buyer delegations."
+  },
+  {
+    image: "/hero-slide-2.jpg",
+    tag: "Digital Innovation",
+    date: "28 September 2026",
+    title: "Digital Accreditation & Spot Bullion Tracking Launched for Visitors",
+    desc: "Pre-registered trade delegates can now receive verified instant QR passes and real-time Rajasthan silver spot rates directly through our portal."
+  }
+];
+
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
-  const [registerRole, setRegisterRole] = useState('visitor');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [galleryFilter, setGalleryFilter] = useState('all');
   const [scrolled, setScrolled] = useState(false);
-  const [adminAuth, setAdminAuth] = useState(false);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
 
-  // Initialize Local Database on Mount
+  const assocScrollRef = useRef(null);
+  const exhibitorsScrollRef = useRef(null);
+  const newsScrollRef = useRef(null);
+
+  const scrollContainer = (ref, offset) => {
+    if (ref.current) {
+      ref.current.scrollBy({ left: offset, behavior: 'smooth' });
+    }
+  };
+
+  const FORM_URL = 'https://www.forms.jsasilvershow.com/';
+
+  const goToForm = () => {
+    window.location.href = FORM_URL;
+  };
+
   useEffect(() => {
-    initStorage();
-    setAdminAuth(checkAdminAuth());
-
-    // Check URL query / hash for admin, register, or contact routes
+    // Check URL query / hash for contact routes or external form triggers
     const checkRoute = () => {
       const hash = window.location.hash.toLowerCase();
       const path = window.location.pathname.toLowerCase();
-      if (hash === '#admin' || hash === '#/admin' || path.includes('admin') || hash === '#.admin') {
-        if (checkAdminAuth()) {
-          setCurrentPage('admin');
-        } else {
-          setShowAdminLogin(true);
-        }
-      } else if (
-        hash === '#register-exhibitor' ||
-        hash === '#exhibitor' ||
-        hash === '#/exhibitor' ||
-        hash === '#exhibitor-intent'
-      ) {
-        setRegisterRole('exhibitor');
-        setCurrentPage('register');
-      } else if (
-        hash === '#register' ||
-        hash === '#/register' ||
-        hash === '#visitor' ||
-        hash === '#/visitor' ||
-        hash === '#registration' ||
+      if (
+        hash.includes('admin') ||
+        path.includes('admin') ||
+        hash.includes('register') ||
+        hash.includes('exhibitor') ||
+        hash.includes('visitor') ||
         path.includes('register') ||
         path.includes('visitor')
       ) {
-        setRegisterRole('visitor');
-        setCurrentPage('register');
+        window.location.href = FORM_URL;
       } else if (hash === '#contact' || hash === '#/contact' || path.includes('contact')) {
         setCurrentPage('contact');
       }
@@ -199,14 +301,6 @@ export default function App() {
     window.addEventListener('hashchange', checkRoute);
     return () => window.removeEventListener('hashchange', checkRoute);
   }, []);
-
-  const goToRegister = (role = 'visitor') => {
-    const targetRole = role === 'exhibitor' ? 'exhibitor' : 'visitor';
-    setRegisterRole(targetRole);
-    window.location.hash = targetRole === 'exhibitor' ? 'register-exhibitor' : 'register';
-    setCurrentPage('register');
-    setMobileMenuOpen(false);
-  };
 
   const heroCarouselImages = [
     "https://jsasilvershow.com/images/crousel/1.jpg",
@@ -240,31 +334,6 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setMobileMenuOpen(false);
   }, [currentPage]);
-
-  if (currentPage === 'register') {
-    return (
-      <RegistrationPage 
-        initialRole={registerRole}
-        onGoHome={() => {
-          window.location.hash = '';
-          setCurrentPage('home');
-        }} 
-      />
-    );
-  }
-
-  if (currentPage === 'admin' && adminAuth) {
-    return (
-      <AdminPanel 
-        onLogout={() => {
-          logoutAdmin();
-          setAdminAuth(false);
-          setCurrentPage('home');
-        }}
-        onGoToSite={() => setCurrentPage('home')}
-      />
-    );
-  }
 
   return (
     <div className="app-root">
@@ -337,7 +406,7 @@ export default function App() {
             </div>
             
             <button 
-              onClick={() => goToRegister('visitor')}
+              onClick={goToForm}
               className="btn-island-primary"
             >
               <span>Register</span>
@@ -358,7 +427,7 @@ export default function App() {
         {mobileMenuOpen && (
           <div className="island-mobile-drawer">
             <div className="drawer-header">
-              <span>22 – 24 NOVEMBER 2026 • BIRLA AUDITORIUM</span>
+              <span>22, 23, 24 NOVEMBER 2026 • BM BIRLA AUDITORIUM, JAIPUR</span>
             </div>
             <div className="drawer-links">
               <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); }} className={currentPage === 'home' ? 'active' : ''}>Home</button>
@@ -369,8 +438,8 @@ export default function App() {
               <button onClick={() => { setCurrentPage('contact'); setMobileMenuOpen(false); }} className={currentPage === 'contact' ? 'active' : ''}>Contact Us</button>
             </div>
             <div className="drawer-cta-stack">
-              <button onClick={() => goToRegister('visitor')} className="btn-solid w-full">Register as Visitor</button>
-              <button onClick={() => goToRegister('exhibitor')} className="btn-outlined w-full">Exhibitor Intent</button>
+              <button onClick={goToForm} className="btn-solid w-full">Register as Visitor</button>
+              <button onClick={goToForm} className="btn-outlined w-full">Exhibitor Intent</button>
             </div>
           </div>
         )}
@@ -401,18 +470,22 @@ export default function App() {
             <div className="hero-fullscreen-container">
               <div className="hero-content-stack">
                 <h1 className="hero-fullscreen-title font-serif">
-                  Jaipur Silver <br className="hero-break" />
+                  JSA Silver <br className="hero-break" />
                   <span className="text-shimmer-pink">Show 2026</span>
                 </h1>
 
+                <p className="hero-tagline-lead">
+                  India’s Most Premium B2B Silver Show!
+                </p>
+
                 <div className="hero-subheading-line hero-badge-glow">
                   <span className="live-sparkle-dot"></span>
-                  <span>22 – 24 NOVEMBER 2026 • BIRLA AUDITORIUM, JAIPUR</span>
+                  <span>22, 23, 24 NOVEMBER 2026 • BM BIRLA AUDITORIUM, JAIPUR</span>
                 </div>
 
                 <div className="hero-cta-row">
                   <button 
-                    onClick={() => goToRegister('visitor')}
+                    onClick={goToForm}
                     className="btn-hero-primary"
                   >
                     <span>REGISTER AS VISITOR (FREE)</span>
@@ -420,18 +493,10 @@ export default function App() {
                   </button>
 
                   <button 
-                    onClick={() => goToRegister('exhibitor')} 
+                    onClick={goToForm} 
                     className="btn-hero-secondary"
                   >
                     <span>EXHIBITOR INTENT</span>
-                    <ArrowUpRight size={14} />
-                  </button>
-
-                  <button 
-                    onClick={() => goToRegister('exhibitor')} 
-                    className="btn-hero-tertiary"
-                  >
-                    <span>FLOOR PLAN & BOOTHS</span>
                     <ArrowUpRight size={14} />
                   </button>
                 </div>
@@ -441,25 +506,36 @@ export default function App() {
 
           {/* STACKED FULL WEBSITE SECTIONS (TRANSITIONING FROM HERO WITH OVERLAP & BORDER RADIUS) */}
           <div className="stacked-website-content">
-            {/* STATS / WHY JOIN JSA (SYNCHRONIZED COUNTERS) */}
+            {/* STATS / WHY ATTEND JSA (SYNCHRONIZED COUNTERS) */}
             <section className="section-space stats-hero-stack">
               <div className="container">
                 <RevealSection>
                   <div className="section-head">
-                    <h2 className="section-title font-serif">Why Join JSA</h2>
-                    <p className="section-lead">Reasons to be part of the community shaping India's silver jewelry & bullion ecosystem.</p>
+                    <h2 className="section-title font-serif">Why Attend JSA</h2>
+                    <p className="section-lead">Reasons to be part of the community shaping India's silver jewelry &amp; bullion ecosystem.</p>
                   </div>
                 </RevealSection>
 
-                {/* All three load at the same time with synchronized animated numbers */}
+                {/* 4 Stats Cards: Exhibitor, Buyers & Visitors, Booths, Exhibition Area */}
                 <RevealSection>
-                  <div className="stats-clean-grid stats-capsule-grid">
+                  <div className="stats-clean-grid stats-capsule-grid four-col">
+                    <div className="stat-card stat-capsule-card">
+                      <div className="stat-icon-wrap"><Gem size={26} /></div>
+                      <div className="stat-value font-serif">
+                        <CounterNumber endValue={175} duration={2000} suffix="+" />
+                      </div>
+                      <h3 className="stat-title">EXHIBITORS</h3>
+                      <p className="stat-desc">
+                        Leading manufacturers, silver bullion dealers, casting tech providers, and master artisans.
+                      </p>
+                    </div>
+
                     <div className="stat-card stat-capsule-card">
                       <div className="stat-icon-wrap"><Briefcase size={26} /></div>
                       <div className="stat-value font-serif">
                         <CounterNumber endValue={10000} duration={2000} suffix="+" />
                       </div>
-                      <h3 className="stat-title">BUYERS & VISITORS</h3>
+                      <h3 className="stat-title">BUYERS &amp; VISITORS</h3>
                       <p className="stat-desc">
                         Verified jewellery showroom owners, wholesale distributors, sourcing agents, and export buyers.
                       </p>
@@ -477,13 +553,13 @@ export default function App() {
                     </div>
 
                     <div className="stat-card stat-capsule-card">
-                      <div className="stat-icon-wrap"><Gem size={26} /></div>
+                      <div className="stat-icon-wrap"><Building size={26} /></div>
                       <div className="stat-value font-serif">
-                        <CounterNumber endValue={175} duration={2000} suffix="+" />
+                        <CounterNumber endValue={5000} duration={2000} suffix=" SQ.FT" suffixClassName="suffix-unit" />
                       </div>
-                      <h3 className="stat-title">EXHIBITORS</h3>
+                      <h3 className="stat-title">EXHIBITION AREA</h3>
                       <p className="stat-desc">
-                        Leading manufacturers, silver bullion dealers, casting tech providers, and master artisans.
+                        Sprawling world-class infrastructure spread across BM Birla Auditorium with dedicated sourcing zones.
                       </p>
                     </div>
                   </div>
@@ -491,172 +567,7 @@ export default function App() {
               </div>
             </section>
 
-            {/* ASSOCIATION PILLARS */}
-            <section className="section-space bg-tint border-top-clean border-bottom-clean">
-              <div className="container">
-                <RevealSection>
-                  <div className="section-head">
-                    <span className="section-kicker">KEY ADVANTAGES</span>
-                    <h2 className="section-title font-serif">What JSA Brings to the Silver Trade</h2>
-                  </div>
-                </RevealSection>
-
-                <div className="pillars-clean-grid">
-                  <RevealSection delay="delay-1">
-                    <div className="pillar-box">
-                      <span className="pillar-order font-serif">01</span>
-                      <div className="pillar-icon"><Scale size={24} /></div>
-                      <h4>Daily Bullion Benchmarks</h4>
-                      <p>Accurate spot market rates for 999 and 925 silver to maintain price transparency and fair trading across Rajasthan.</p>
-                    </div>
-                  </RevealSection>
-
-                  <RevealSection delay="delay-2">
-                    <div className="pillar-box">
-                      <span className="pillar-order font-serif">02</span>
-                      <div className="pillar-icon"><BadgeCheck size={24} /></div>
-                      <h4>Hallmarking & Trust</h4>
-                      <p>Ensuring strict compliance with purity standards and authentic craftsmanship verification for buyers.</p>
-                    </div>
-                  </RevealSection>
-
-                  <RevealSection delay="delay-3">
-                    <div className="pillar-box">
-                      <span className="pillar-order font-serif">03</span>
-                      <div className="pillar-icon"><Globe2 size={24} /></div>
-                      <h4>Direct B2B Market Access</h4>
-                      <p>Connecting regional master silversmiths directly with pan-India retail chains and international export channels.</p>
-                    </div>
-                  </RevealSection>
-                </div>
-              </div>
-            </section>
-
-            {/* DAILY BULLION INDEX & INSTAGRAM COMMUNITY */}
-            <section className="section-space">
-              <div className="container">
-                <RevealSection>
-                  <div className="bullion-insta-grid">
-                    {/* Left: Jaipur Silver Rates & Bullion Index */}
-                    <div className="bullion-capsule-card">
-                      <div className="card-top-kicker">
-                        <span className="bullion-pill-kicker">
-                          <TrendingUp size={14} />
-                          <span>DAILY MARKET BENCHMARK</span>
-                        </span>
-                        <span className="live-market-badge">
-                          <span className="live-sparkle-dot"></span>
-                          <span>SPOT VERIFIED</span>
-                        </span>
-                      </div>
-
-                      <h2 className="bullion-card-title font-serif">Jaipur Silver Rates &amp; Bullion Index</h2>
-                      <p className="bullion-card-desc">
-                        Daily benchmark spot rates monitored and certified by the Jaipur Silver Association to maintain transparency across Rajasthan.
-                      </p>
-
-                      <div className="bullion-twin-rates">
-                        <div className="rate-capsule-box">
-                          <div className="rate-box-header">
-                            <span className="rate-box-name">Silver 999 (Fine)</span>
-                            <span className="rate-purity-tag">99.9% Pure</span>
-                          </div>
-                          <div className="rate-box-price font-serif">
-                            ₹98,500 <span className="rate-unit">/ kg</span>
-                          </div>
-                          <div className="rate-box-meta green-tint">
-                            <TrendingUp size={13} />
-                            <span>Market Bullish • Verified Spot</span>
-                          </div>
-                        </div>
-
-                        <div className="rate-capsule-box">
-                          <div className="rate-box-header">
-                            <span className="rate-box-name">Silver 925 (Sterling)</span>
-                            <span className="rate-purity-tag">BIS Hallmark</span>
-                          </div>
-                          <div className="rate-box-price font-serif">
-                            ₹91,200 <span className="rate-unit">/ kg</span>
-                          </div>
-                          <div className="rate-box-meta blue-tint">
-                            <BadgeCheck size={13} />
-                            <span>Hallmark Standard</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="bullion-card-footer">
-                        <Clock size={13} />
-                        <span>Monitored live daily • Jaipur Sarafa Market</span>
-                      </div>
-                    </div>
-
-                    {/* Right: Follow on Instagram */}
-                    <div className="insta-capsule-card">
-                      <div className="card-top-kicker">
-                        <span className="insta-pill-kicker">
-                          <InstagramIcon size={14} />
-                          <span>OFFICIAL INSTAGRAM</span>
-                        </span>
-                        <span className="insta-verified-pill">
-                          <BadgeCheck size={13} />
-                          <span>OFFICIAL PAGE</span>
-                        </span>
-                      </div>
-
-                      <div className="insta-header-profile">
-                        <div className="insta-avatar-ring">
-                          <div className="insta-avatar-inner">
-                            <img src="/jsa-show-logo.jpg" alt="JSA Silver Show" />
-                          </div>
-                        </div>
-                        <div className="insta-profile-info">
-                          <div className="insta-handle-row">
-                            <h3 className="insta-handle">@jsasilvershow</h3>
-                            <BadgeCheck size={16} className="insta-check-ico" />
-                          </div>
-                          <p className="insta-tagline">Jaipur Silver Show 2026 • JSA Official</p>
-                        </div>
-                      </div>
-
-                      <p className="insta-card-desc">
-                        Follow us on Instagram for daily bullion rate reels, artisan craftsmanship spotlights, behind-the-scenes glimpses, and live expo highlights.
-                      </p>
-
-                      <div className="insta-highlights-row">
-                        <div className="insta-hl-chip">
-                          <span className="hl-dot"></span>
-                          <span>Daily Rate Reels</span>
-                        </div>
-                        <div className="insta-hl-chip">
-                          <span className="hl-dot"></span>
-                          <span>Artisan Spotlights</span>
-                        </div>
-                        <div className="insta-hl-chip">
-                          <span className="hl-dot"></span>
-                          <span>Live Expo Stories</span>
-                        </div>
-                      </div>
-
-                      <div className="insta-card-action">
-                        <a 
-                          href="https://www.instagram.com/jsasilvershow/" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="btn-insta-follow"
-                        >
-                          <InstagramIcon size={16} />
-                          <span>FOLLOW ON INSTAGRAM</span>
-                          <ArrowUpRight size={14} />
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </RevealSection>
-              </div>
-            </section>
-
-            {/* EVENT VENUE CAPSULE LUXURY CARD */}
+            {/* EVENT VENUE CAPSULE LUXURY CARD (SHIFTED UNDER WHY ATTEND JSA) */}
             <section className="section-space border-bottom-clean">
               <div className="container">
                 <RevealSection>
@@ -669,7 +580,7 @@ export default function App() {
                           <span>OFFICIAL EXHIBITION VENUE</span>
                         </span>
                         <h2 className="venue-capsule-title font-serif">
-                          Birla Auditorium, Jaipur
+                          BM Birla Auditorium, Jaipur
                         </h2>
                         <p className="venue-capsule-subtitle">
                           A world-class landmark convention centre hosting the entire 3-hall silver exposition in the royal heart of Rajasthan.
@@ -687,7 +598,7 @@ export default function App() {
                           <span>GET DIRECTIONS</span>
                         </a>
                         <button 
-                          onClick={() => goToRegister('visitor')}
+                          onClick={goToForm}
                           className="btn-capsule-secondary"
                         >
                           <span>VISITOR PASS</span>
@@ -705,7 +616,7 @@ export default function App() {
                             <MapPin size={22} />
                           </div>
                           <div className="venue-addr-info">
-                            <strong>Birla Auditorium &amp; Convention Centre</strong>
+                            <strong>BM Birla Auditorium &amp; Convention Centre</strong>
                             <p>Statue Circle, Bhawani Singh Marg, C Scheme, Jaipur, Rajasthan 302001, India</p>
                           </div>
                         </div>
@@ -770,6 +681,230 @@ export default function App() {
               </div>
             </section>
 
+            {/* SUPPORTING ASSOCIATIONS - HORIZONTAL SCROLLER */}
+            <section className="section-space supporting-assoc-section">
+              <div className="container">
+                <RevealSection>
+                  <div className="section-head-with-controls">
+                    <div>
+                      <span className="section-kicker">UNITED INDUSTRY LEADERSHIP</span>
+                      <h2 className="section-title font-serif">Supporting Associations</h2>
+                      <p className="section-lead">Apex jewellery bodies and regional Sarafa Sansthans extending their esteemed patronship to JSA Silver Show 2026.</p>
+                    </div>
+                    <div className="scroll-arrow-controls">
+                      <button 
+                        onClick={() => scrollContainer(assocScrollRef, -320)} 
+                        className="btn-scroll-arrow"
+                        aria-label="Scroll left"
+                      >
+                        <ChevronLeft size={18} />
+                      </button>
+                      <button 
+                        onClick={() => scrollContainer(assocScrollRef, 320)} 
+                        className="btn-scroll-arrow"
+                        aria-label="Scroll right"
+                      >
+                        <ChevronRight size={18} />
+                      </button>
+                    </div>
+                  </div>
+                </RevealSection>
+
+                <div 
+                  ref={assocScrollRef}
+                  className="horizontal-cards-scroller"
+                >
+                  {SUPPORTING_ASSOCIATIONS.map((leader, idx) => (
+                    <div key={idx} className="assoc-leader-card">
+                      <div className="assoc-avatar-wrap">
+                        <img 
+                          src="https://img.magnific.com/premium-vector/avatar-profil-picture-icon-vector-design-template_393879-5783.jpg?semt=ais_hybrid&w=740&q=80" 
+                          alt={leader.name}
+                          className="assoc-avatar-img"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="assoc-info">
+                        <h4 className="assoc-name">{leader.name}</h4>
+                        <p className="assoc-role">{leader.role}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* OUR EXHIBITORS - HORIZONTAL SCROLLER */}
+            <section className="section-space exhibitors-section bg-tint border-top-clean border-bottom-clean">
+              <div className="container">
+                <RevealSection>
+                  <div className="section-head-with-controls">
+                    <div>
+                      <span className="section-kicker">SHOWCASE PARTICIPANTS</span>
+                      <h2 className="section-title font-serif">Our Exhibitors</h2>
+                      <p className="section-lead">Distinguished manufacturers, wholesalers, export houses, and master artisans participating in JSA Silver Show 2026.</p>
+                    </div>
+                    <div className="scroll-arrow-controls">
+                      <button 
+                        onClick={() => scrollContainer(exhibitorsScrollRef, -320)} 
+                        className="btn-scroll-arrow"
+                        aria-label="Scroll left"
+                      >
+                        <ChevronLeft size={18} />
+                      </button>
+                      <button 
+                        onClick={() => scrollContainer(exhibitorsScrollRef, 320)} 
+                        className="btn-scroll-arrow"
+                        aria-label="Scroll right"
+                      >
+                        <ChevronRight size={18} />
+                      </button>
+                    </div>
+                  </div>
+                </RevealSection>
+
+                <div 
+                  ref={exhibitorsScrollRef}
+                  className="horizontal-cards-scroller exhibitors-scroller"
+                >
+                  {EXHIBITORS_LIST.map((name, idx) => (
+                    <div key={idx} className="exhibitor-badge-card">
+                      <div className="exhibitor-badge-index">#{String(idx + 1).padStart(2, '0')}</div>
+                      <div className="exhibitor-crest-icon">
+                        <Gem size={18} />
+                      </div>
+                      <h4 className="exhibitor-company-name">{name}</h4>
+                      <span className="exhibitor-status-pill">Registered Exhibitor</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* DAILY BULLION INDEX & INSTAGRAM COMMUNITY */}
+            <section className="section-space">
+              <div className="container">
+                <RevealSection>
+                  <div className="bullion-insta-grid">
+                    {/* Left: Jaipur Silver Rates & Bullion Index */}
+                    <div className="bullion-capsule-card">
+                      <div className="card-top-kicker">
+                        <span className="bullion-pill-kicker">
+                          <TrendingUp size={14} />
+                          <span>DAILY MARKET BENCHMARK</span>
+                        </span>
+                        <span className="live-market-badge">
+                          <span className="live-sparkle-dot"></span>
+                          <span>SPOT VERIFIED</span>
+                        </span>
+                      </div>
+
+                      <h2 className="bullion-card-title font-serif">Jaipur Silver Rates &amp; Bullion Index</h2>
+                      <p className="bullion-card-desc">
+                        Daily benchmark spot rates monitored and certified by JSA Silver Show to maintain transparency across Rajasthan.
+                      </p>
+
+                      <div className="bullion-twin-rates">
+                        <div className="rate-capsule-box">
+                          <div className="rate-box-header">
+                            <span className="rate-box-name">Silver 999 (Fine)</span>
+                            <span className="rate-purity-tag">99.9% Pure</span>
+                          </div>
+                          <div className="rate-box-price font-serif">
+                            ₹98,500 <span className="rate-unit">/ kg</span>
+                          </div>
+                          <div className="rate-box-meta green-tint">
+                            <TrendingUp size={13} />
+                            <span>Market Bullish • Verified Spot</span>
+                          </div>
+                        </div>
+
+                        <div className="rate-capsule-box">
+                          <div className="rate-box-header">
+                            <span className="rate-box-name">Silver 925 (Sterling)</span>
+                            <span className="rate-purity-tag">BIS Hallmark</span>
+                          </div>
+                          <div className="rate-box-price font-serif">
+                            ₹91,200 <span className="rate-unit">/ kg</span>
+                          </div>
+                          <div className="rate-box-meta blue-tint">
+                            <BadgeCheck size={13} />
+                            <span>Hallmark Standard</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bullion-card-footer">
+                        <Clock size={13} />
+                        <span>Monitored live daily • Jaipur Sarafa Market</span>
+                      </div>
+                    </div>
+
+                    {/* Right: Follow on Instagram */}
+                    <div className="insta-capsule-card">
+                      <div className="card-top-kicker">
+                        <span className="insta-pill-kicker">
+                          <InstagramIcon size={14} />
+                          <span>OFFICIAL INSTAGRAM</span>
+                        </span>
+                        <span className="insta-verified-pill">
+                          <BadgeCheck size={13} />
+                          <span>OFFICIAL PAGE</span>
+                        </span>
+                      </div>
+
+                      <div className="insta-header-profile">
+                        <div className="insta-avatar-ring">
+                          <div className="insta-avatar-inner">
+                            <img src="/jsa-show-logo.jpg" alt="JSA Silver Show" />
+                          </div>
+                        </div>
+                        <div className="insta-profile-info">
+                          <div className="insta-handle-row">
+                            <h3 className="insta-handle">@jsasilvershow</h3>
+                            <BadgeCheck size={16} className="insta-check-ico" />
+                          </div>
+                          <p className="insta-tagline">JSA Silver Show 2026 • JSA Official</p>
+                        </div>
+                      </div>
+
+                      <p className="insta-card-desc">
+                        Follow us on Instagram for daily bullion rate reels, artisan craftsmanship spotlights, behind-the-scenes glimpses, and live expo highlights.
+                      </p>
+
+                      <div className="insta-highlights-row">
+                        <div className="insta-hl-chip">
+                          <span className="hl-dot"></span>
+                          <span>Daily Rate Reels</span>
+                        </div>
+                        <div className="insta-hl-chip">
+                          <span className="hl-dot"></span>
+                          <span>Artisan Spotlights</span>
+                        </div>
+                        <div className="insta-hl-chip">
+                          <span className="hl-dot"></span>
+                          <span>Live Expo Stories</span>
+                        </div>
+                      </div>
+
+                      <div className="insta-card-action">
+                        <a 
+                          href="https://www.instagram.com/jsasilvershow/" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="btn-insta-follow"
+                        >
+                          <InstagramIcon size={16} />
+                          <span>FOLLOW ON INSTAGRAM</span>
+                          <ArrowUpRight size={14} />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </RevealSection>
+              </div>
+            </section>
+
           {/* INSIDE THE ASSOCIATION (VIDEO) */}
           <section className="section-space">
             <div className="container">
@@ -786,7 +921,7 @@ export default function App() {
                 >
                   <iframe 
                     src="https://www.youtube-nocookie.com/embed/X8rk9yWXnBg?autoplay=1&mute=1&loop=1&playlist=X8rk9yWXnBg&controls=0&showinfo=0&rel=0&modestbranding=1" 
-                    title="Jaipur Silver Show Highlights"
+                    title="JSA Silver Show Highlights"
                     style={{ width: '100%', height: '100%', border: 'none', pointerEvents: 'none' }}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                   />
@@ -937,6 +1072,68 @@ export default function App() {
               </div>
             </div>
           </section>
+
+          {/* NEWS & EVENTS SECTION (3 RECTANGLE CARDS IN SINGLE HORIZONTAL ROW / MOBILE SCROLLABLE) */}
+          <section className="section-space news-events-section bg-tint border-top-clean border-bottom-clean">
+            <div className="container">
+              <RevealSection>
+                <div className="section-head-with-controls">
+                  <div>
+                    <span className="section-kicker">UPDATES &amp; PRESS</span>
+                    <h2 className="section-title font-serif">News &amp; Events</h2>
+                    <p className="section-lead">Stay informed with the latest announcements, media releases, and milestones from JSA Silver Show 2026.</p>
+                  </div>
+                  <div className="scroll-arrow-controls mobile-only-flex">
+                    <button 
+                      onClick={() => scrollContainer(newsScrollRef, -320)} 
+                      className="btn-scroll-arrow"
+                      aria-label="Scroll left"
+                    >
+                      <ChevronLeft size={18} />
+                    </button>
+                    <button 
+                      onClick={() => scrollContainer(newsScrollRef, 320)} 
+                      className="btn-scroll-arrow"
+                      aria-label="Scroll right"
+                    >
+                      <ChevronRight size={18} />
+                    </button>
+                  </div>
+                </div>
+              </RevealSection>
+
+              <div 
+                ref={newsScrollRef}
+                className="news-cards-row"
+              >
+                {NEWS_EVENTS.map((item, idx) => (
+                  <div key={idx} className="news-rectangle-card">
+                    <div className="news-card-image-wrap">
+                      <img 
+                        src={item.image} 
+                        alt={item.title} 
+                        className="news-card-image"
+                        loading="lazy" 
+                      />
+                      <span className="news-tag-badge overlay">{item.tag}</span>
+                    </div>
+                    <div className="news-card-body">
+                      <div className="news-card-meta">
+                        <Calendar size={13} />
+                        <span>{item.date}</span>
+                      </div>
+                      <h3 className="news-card-title font-serif">{item.title}</h3>
+                      <p className="news-card-desc">{item.desc}</p>
+                      <button onClick={goToForm} className="news-card-link-btn">
+                        <span>Read Full Release</span>
+                        <ArrowRight size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
           </div>
         </main>
       )}
@@ -951,8 +1148,8 @@ export default function App() {
           <section className="au-hero">
             <div className="container">
               <RevealSection>
-                <p className="au-eyebrow">About the Association</p>
-                <h1 className="au-hero-title">Jaipur Silver<br /><em>Association</em></h1>
+                <p className="au-eyebrow">About the Show</p>
+                <h1 className="au-hero-title">JSA Silver<br /><em>Show</em></h1>
                 <p className="au-hero-lead">Preserving centuries of silversmithing heritage while empowering the future of trade.</p>
               </RevealSection>
             </div>
@@ -967,7 +1164,7 @@ export default function App() {
                     <span className="au-label">Our Story</span>
                     <h2 className="au-h2">Heritage, Craft<br />&amp; Transparency</h2>
                     <p className="au-body">
-                      Jaipur has long stood as the world's crowning jewel for handcrafted silver artistry, intricate filigree, and authentic bullion trade. The Jaipur Silver Association represents the collective voice of silversmiths, master artisans, casting innovators, and export merchants.
+                      Jaipur has long stood as the world's crowning jewel for handcrafted silver artistry, intricate filigree, and authentic bullion trade. JSA Silver Show represents the collective voice of silversmiths, master artisans, casting innovators, and export merchants.
                     </p>
                     <p className="au-body">
                       Through the annual <strong>JSA Silver Show</strong>, we curate a national B2B exhibition platform providing fair pricing, direct buyer connections, and certified hallmarking purity.
@@ -1059,10 +1256,10 @@ export default function App() {
                 </div>
                 <div className="au-members-grid">
                   {[
-                    { name: 'Ujjwal Derewala',     role: 'Chairman',                        quote: 'With a focus on growth and global reach, Jaipur Silver Show stands as a key initiative for the silver industry.',               img: 'ujjwal_derewala.jpg' },
-                    { name: 'Abhineet Boochra',    role: 'Vice Chairman',                   quote: 'Jaipur Silver Show reflects the strength and legacy of our silver industry. We are committed to an exceptional experience.',       img: '2. ABHINEET BOOCHRA VICE, CHAIRMAN.JPG' },
+                    { name: 'Ujjwal Derewala',     role: 'Chairman',                        quote: 'With a focus on growth and global reach, JSA Silver Show stands as a key initiative for the silver industry.',               img: 'ujjwal_derewala.jpg' },
+                    { name: 'Abhineet Boochra',    role: 'Vice Chairman',                   quote: 'JSA Silver Show reflects the strength and legacy of our silver industry. We are committed to an exceptional experience.',       img: '2. ABHINEET BOOCHRA VICE, CHAIRMAN.JPG' },
                     { name: 'Abhishek Bansal',     role: 'Vice Chairman',                   quote: 'This initiative reflects our collective effort to elevate the silver industry to new heights.',                                    img: '3. ABHISHEK BANSAL VICE, CHAIRMAN.JPG' },
-                    { name: 'Rahul Jain',          role: 'Hony. Secretary',                 quote: "Being part of Jaipur Silver Show is more than participation — it's about shaping the future of trade.",                          img: 'rahul_jain.jpg' },
+                    { name: 'Rahul Jain',          role: 'Hony. Secretary',                 quote: "Being part of JSA Silver Show is more than participation — it's about shaping the future of trade.",                          img: 'rahul_jain.jpg' },
                     { name: 'Deepesh Goyal',       role: 'Treasurer',                       quote: 'With a focus on transparency and efficiency, we ensure smooth operations of the show.',                                            img: '5. DEEPESH GOYAL, TREASURER.JPG' },
                     { name: 'Karan Boochra',       role: 'Digital & Innovation Secretary',  quote: 'Through digital innovation, we are creating a modern and seamless show experience.',                                              img: '6. KARAN BOOCHRA, DIGITAL AND INNOVATION SECRETARY.JPG' },
                     { name: 'Manan Sogani',        role: 'Joint Secretary',                 quote: 'We are dedicated to coordinating efforts and delivering a smooth experience for all.',                                            img: '7. MANAN SOGANI, JOINT SECRETARY.JPG' },
@@ -1156,8 +1353,8 @@ export default function App() {
         </main>
       )}
 
-      {/* ========================================================
-          PAGE 3: EXHIBITORS PORTAL & PROFILE (BROCHURE ACCREDITED)
+            {/* ========================================================
+          PAGE 3: EXHIBITOR PROFILE
           ======================================================== */}
       {currentPage === 'exhibitor-alerts' && (
         <main className="page-content exhibitor-page-root">
@@ -1171,211 +1368,29 @@ export default function App() {
                     <span>EXHIBITOR PROFILE • JSA SILVER SHOW 2026</span>
                   </span>
                   <h1 className="portal-hero-title font-serif">
-                    Where Heritage Meets Elegance
+                    Exhibitor Profile
                   </h1>
+                  <h2 className="portal-hero-subheading font-serif">
+                    Who Can Exhibit?
+                  </h2>
                   <p className="portal-hero-lead">
-                    The Ultimate Silver Destination, presented for the first time by India's premier silver association. Connect your brand with verified national retail chains, wholesalers, and export buyers under one roof at Birla Auditorium, Jaipur.
+                    The exhibition welcomes businesses, manufacturers, wholesalers, artisans, designers, and brands operating across the silver jewellery and lifestyle ecosystem.
                   </p>
                   <div className="portal-hero-actions">
                     <button 
-                      onClick={() => goToRegister('exhibitor')}
+                      onClick={goToForm}
                       className="btn-portal-primary"
                     >
                       <Store size={15} />
-                      <span>SUBMIT EXHIBITOR INTENT</span>
+                      <span>BOOK A BOOTH / EXHIBITOR INTENT</span>
                       <ArrowRight size={14} />
                     </button>
-                    <a 
-                      href="#exhibitor-profiles" 
+                    <button 
+                      onClick={() => setCurrentPage('contact')} 
                       className="btn-portal-secondary"
                     >
-                      <LayoutGrid size={15} />
-                      <span>EXPLORE EXHIBITOR PROFILES</span>
-                    </a>
-                  </div>
-                </div>
-              </RevealSection>
-            </div>
-          </div>
-
-          {/* Quick Metrics Strip */}
-          <div className="portal-metrics-section">
-            <div className="container">
-              <RevealSection>
-                <div className="portal-metrics-grid">
-                  <div className="metric-capsule-item">
-                    <div className="metric-num font-serif">22-24</div>
-                    <div className="metric-label">November 2026 • 3 Days</div>
-                  </div>
-                  <div className="metric-capsule-item">
-                    <div className="metric-num font-serif">B2B</div>
-                    <div className="metric-label">The Powerhouse Business Driver</div>
-                  </div>
-                  <div className="metric-capsule-item">
-                    <div className="metric-num font-serif">100%</div>
-                    <div className="metric-label">Pure Silver Ecosystem</div>
-                  </div>
-                  <div className="metric-capsule-item">
-                    <div className="metric-num font-serif">₹0</div>
-                    <div className="metric-label">On-Site Armed Vaulting Facility</div>
-                  </div>
-                </div>
-              </RevealSection>
-            </div>
-          </div>
-
-          {/* Core Feature: Exhibitor Profile (from Official Brochure Page 3) */}
-          <div id="exhibitor-profiles" className="portal-content-section">
-            <div className="container">
-              <RevealSection>
-                <div className="portal-section-head">
-                  <span className="portal-section-kicker">OFFICIAL BROCHURE PROFILE</span>
-                  <h2 className="portal-section-title font-serif">Exhibitor Profile</h2>
-                  <p className="portal-section-subtitle">Categories of leading silver businesses exhibiting at India's premier silver showcase.</p>
-                </div>
-
-                <div className="portal-profile-grid">
-                  <div className="profile-card">
-                    <span className="profile-badge-pill pink">MANUFACTURING</span>
-                    <h3 className="profile-card-title font-serif">Silver Jewellery Manufacturers</h3>
-                    <p className="profile-card-desc">
-                      Entities presenting fine handcrafted, traditional, and contemporary 925 sterling silver ornaments.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">925 Sterling</span>
-                      <span className="profile-tag">Handcrafted</span>
-                      <span className="profile-tag">Contemporary Designs</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-card">
-                    <span className="profile-badge-pill blue">WHOLESALE &amp; BULK</span>
-                    <h3 className="profile-card-title font-serif">Silver Wholesalers &amp; Distributors</h3>
-                    <p className="profile-card-desc">
-                      Large-scale suppliers connecting manufacturers with retail buyers across India and global markets.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Pan-India Supply</span>
-                      <span className="profile-tag">Global Exports</span>
-                      <span className="profile-tag">Bulk Delivery</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-card">
-                    <span className="profile-badge-pill gold">HERITAGE CRAFT</span>
-                    <h3 className="profile-card-title font-serif">Kundan Meena &amp; Jadau Artisans</h3>
-                    <p className="profile-card-desc">
-                      Specialised craftsmen showcasing Jaipur's traditional fusion styles on authentic silver bases.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Kundan Meena</span>
-                      <span className="profile-tag">Jadau Work</span>
-                      <span className="profile-tag">Royal Fusion</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-card">
-                    <span className="profile-badge-pill purple">BRIDAL &amp; COUTURE</span>
-                    <h3 className="profile-card-title font-serif">Moissanite &amp; Polki Silver Jewellers</h3>
-                    <p className="profile-card-desc">
-                      Exhibitors dealing in high-end fusion jewellery featuring silver with faux diamond accents and polki artistry.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Polki Silver</span>
-                      <span className="profile-tag">Moissanite Sets</span>
-                      <span className="profile-tag">Haute Couture</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-card">
-                    <span className="profile-badge-pill pink">ARTEFACTS &amp; GIFTS</span>
-                    <h3 className="profile-card-title font-serif">Hand-Crafted Jewellery &amp; Artefacts</h3>
-                    <p className="profile-card-desc">
-                      Businesses presenting handmade jewellery, silverware, silver idols, corporate gifts, and traditional houseware.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Silverware</span>
-                      <span className="profile-tag">Silver Idols</span>
-                      <span className="profile-tag">Corporate Gifting</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-card">
-                    <span className="profile-badge-pill blue">ALLIED &amp; TECH</span>
-                    <h3 className="profile-card-title font-serif">Packaging &amp; Technology Allied Partners</h3>
-                    <p className="profile-card-desc">
-                      Machinery, 3D casting equipment, laser hallmark solutions, and luxury jewellery display cases for the silver ecosystem.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Packaging Solutions</span>
-                      <span className="profile-tag">Hallmarking Gear</span>
-                      <span className="profile-tag">Jewellery Display</span>
-                    </div>
-                  </div>
-                </div>
-              </RevealSection>
-            </div>
-          </div>
-
-          {/* Exhibition Stall Categories & Specifications */}
-          <div id="booth-specs" className="portal-content-section au-tinted">
-            <div className="container">
-              <RevealSection>
-                <div className="portal-section-head">
-                  <span className="portal-section-kicker">STALL PACKAGES</span>
-                  <h2 className="portal-section-title font-serif">Exhibition Stall Packages</h2>
-                  <p className="portal-section-subtitle">Flexible booth configurations built to elevate your brand presence at Birla Auditorium.</p>
-                </div>
-
-                <div className="portal-cards-grid three-col">
-                  <div className="portal-capsule-card featured-stall">
-                    <div className="stall-badge-pill">MOST POPULAR</div>
-                    <div className="stall-size font-serif">9 sq.m / 18 sq.m</div>
-                    <h3 className="stall-name">Standard Shell Scheme</h3>
-                    <p className="stall-desc">Turnkey octanorm booth fully equipped for instant retail &amp; wholesale showcase.</p>
-                    <ul className="stall-perks-list">
-                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Octanorm modular walls &amp; company fascia board</span></li>
-                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Spotlight fixtures &amp; multi-power sockets</span></li>
-                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Lockable glass display counters &amp; chairs</span></li>
-                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Complimentary exhibitor access passes</span></li>
-                    </ul>
-                    <button onClick={() => goToRegister('exhibitor')} className="btn-stall-select">
-                      <span>Reserve Shell Scheme</span>
-                      <ArrowRight size={14} />
-                    </button>
-                  </div>
-
-                  <div className="portal-capsule-card">
-                    <div className="stall-badge-pill premium">FLAGSHIP SPACE</div>
-                    <div className="stall-size font-serif">36 sq.m – 72 sq.m</div>
-                    <h3 className="stall-name">Bare / Island Pavilion</h3>
-                    <p className="stall-desc">Complete architectural freedom for custom mezzanine &amp; luxury brand design.</p>
-                    <ul className="stall-perks-list">
-                      <li><CheckCircle2 size={15} className="check-ico" /> <span>4-side open or 3-side open prime corner locations</span></li>
-                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Dedicated high-capacity industrial power load</span></li>
-                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Priority buyer lounge reservations &amp; catering</span></li>
-                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Maximum badge allotment &amp; directory feature</span></li>
-                    </ul>
-                    <button onClick={() => goToRegister('exhibitor')} className="btn-stall-select">
-                      <span>Request Bare Space</span>
-                      <ArrowRight size={14} />
-                    </button>
-                  </div>
-
-                  <div className="portal-capsule-card">
-                    <div className="stall-badge-pill craft">HERITAGE SUBSIDY</div>
-                    <div className="stall-size font-serif">Artisan Pavilion</div>
-                    <h3 className="stall-name">Master Karigar Pod</h3>
-                    <p className="stall-desc">Subsidized collective space dedicated to traditional Jaipur filigree &amp; heritage silversmiths.</p>
-                    <ul className="stall-perks-list">
-                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Curated showcase for certified handmade silver</span></li>
-                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Subsidized booth pricing supported by JSA</span></li>
-                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Direct exposure to pan-India boutique retail buyers</span></li>
-                      <li><CheckCircle2 size={15} className="check-ico" /> <span>Artisan recognition &amp; promotional highlight</span></li>
-                    </ul>
-                    <button onClick={() => goToRegister('exhibitor')} className="btn-stall-select">
-                      <span>Apply as Artisan</span>
-                      <ArrowRight size={14} />
+                      <Phone size={15} />
+                      <span>SHOW SECRETARIAT</span>
                     </button>
                   </div>
                 </div>
@@ -1383,202 +1398,108 @@ export default function App() {
             </div>
           </div>
 
-          {/* Official Leadership Perspectives from Brochure Page 3 */}
+          {/* 5 Core Exhibitor Categories Grid */}
           <div className="portal-content-section">
             <div className="container">
               <RevealSection>
                 <div className="portal-section-head">
-                  <span className="portal-section-kicker">LEADERSHIP VOICES</span>
-                  <h2 className="portal-section-title font-serif">Leadership Messages for Exhibitors</h2>
-                  <p className="portal-section-subtitle">Words of encouragement and vision from the key leaders of Jaipur Silver Association.</p>
+                  <span className="portal-section-kicker">PARTICIPATION SPECTRUM</span>
+                  <h2 className="portal-section-title font-serif">Who Can Exhibit?</h2>
+                  <p className="portal-section-subtitle">
+                    The exhibition welcomes businesses, manufacturers, wholesalers, artisans, designers, and brands operating across the silver jewellery and lifestyle ecosystem.
+                  </p>
                 </div>
 
-                <div className="portal-quotes-grid">
-                  <div className="quote-leader-card">
-                    <div className="quote-leader-head">
-                      <img 
-                        src="/ujjwal_derewala.jpg" 
-                        alt="Ujjwal Derewala" 
-                        className="quote-leader-avatar" 
-                      />
-                      <div className="quote-leader-meta">
-                        <span className="quote-leader-name">Ujjwal Derewala</span>
-                        <span className="quote-leader-role">Chairman</span>
-                      </div>
+                <div className="profile-spec-grid">
+                  <div className="spec-card">
+                    <div className="spec-card-icon-box">
+                      <Gem size={24} />
                     </div>
-                    <p className="quote-leader-text">
-                      "Jaipur Silver Association proudly presents a platform that reflects the true strength of Jaipur as the Silver Hub of India. Our vision is to create unmatched business opportunities and global exposure for the silver industry."
-                    </p>
-                  </div>
-
-                  <div className="quote-leader-card">
-                    <div className="quote-leader-head">
-                      <img 
-                        src="/rahul_jain.jpg" 
-                        alt="Rahul Jain" 
-                        className="quote-leader-avatar" 
-                      />
-                      <div className="quote-leader-meta">
-                        <span className="quote-leader-name">Rahul Jain</span>
-                        <span className="quote-leader-role">Hony. Secretary</span>
-                      </div>
-                    </div>
-                    <p className="quote-leader-text">
-                      "We are committed to delivering a well-organised and impactful show experience for exhibitors and visitors alike. JSA continues to build strong connections and drive growth in the silver trade."
-                    </p>
-                  </div>
-
-                  <div className="quote-leader-card">
-                    <div className="quote-leader-head">
-                      <img 
-                        src="/dr_arun_garg.jpg" 
-                        alt="Dr. Arun Garg" 
-                        className="quote-leader-avatar" 
-                      />
-                      <div className="quote-leader-meta">
-                        <span className="quote-leader-name">Dr. Arun Garg</span>
-                        <span className="quote-leader-role">Convenor</span>
-                      </div>
-                    </div>
-                    <p className="quote-leader-text">
-                      "Our focus is to ensure seamless execution and maximum value for every participant. This show is designed to bring innovation, networking, and new opportunities together."
-                    </p>
-                  </div>
-
-                  <div className="quote-leader-card">
-                    <div className="quote-leader-head">
-                      <img 
-                        src="/smt_anita_dhingra.jpg" 
-                        alt="Smt. Anita Dhingra" 
-                        className="quote-leader-avatar" 
-                      />
-                      <div className="quote-leader-meta">
-                        <span className="quote-leader-name">Smt. Anita Dhingra</span>
-                        <span className="quote-leader-role">Convenor</span>
-                      </div>
-                    </div>
-                    <p className="quote-leader-text">
-                      "We aim to create a dynamic and inspiring environment for all stakeholders. JSA Show will showcase the finest craftsmanship and strengthen Jaipur's identity as the Silver Hub of India."
-                    </p>
-                  </div>
-                </div>
-
-                {/* Legacy Banner Callout */}
-                <div className="portal-callout-banner">
-                  <div className="portal-callout-banner-content">
-                    <span className="portal-section-kicker" style={{ marginBottom: '0.4rem' }}>FUTURE ROADMAP</span>
-                    <h3 className="font-serif">The Legacy Continues • JSA Silver Show 2027</h3>
-                    <p>Mark your dates for next year: 12-13-14 November 2027 in Jaipur. Official logistics powered by Secure Global Logistics.</p>
-                  </div>
-                  <button onClick={() => goToRegister('exhibitor')} className="btn-portal-primary" style={{ flexShrink: 0 }}>
-                    <span>Register 2026 Booth</span>
-                    <ArrowRight size={14} />
-                  </button>
-                </div>
-              </RevealSection>
-            </div>
-          </div>
-
-          {/* Exhibitor Operational Timeline */}
-          <div className="portal-content-section au-tinted">
-            <div className="container">
-              <RevealSection>
-                <div className="portal-section-head">
-                  <span className="portal-section-kicker">KEY DEADLINES</span>
-                  <h2 className="portal-section-title font-serif">Exhibitor Timeline &amp; Possession</h2>
-                  <p className="portal-section-subtitle">Critical milestones to ensure effortless setup, vaulting, and exhibition operations.</p>
-                </div>
-
-                <div className="portal-timeline-stack">
-                  <div className="timeline-capsule-row">
-                    <div className="timeline-date-capsule">
-                      <Calendar size={15} />
-                      <span>21 NOV • 09:00 AM</span>
-                    </div>
-                    <div className="timeline-info-box">
-                      <h4 className="timeline-h4 font-serif">Booth Handover &amp; Decoration Setup</h4>
-                      <p className="timeline-p">
-                        Exhibitors can take physical possession of allocated stalls at Birla Auditorium. Display arrangements, branding posters, and lighting fixtures must be completed by 8:00 PM.
+                    <div className="spec-card-body">
+                      <h3 className="spec-card-title font-serif">Silver Jewellery Manufacturers</h3>
+                      <p className="spec-card-desc">
+                        Manufacturers showcasing handcrafted, traditional, contemporary, and 925 sterling silver jewellery.
                       </p>
                     </div>
                   </div>
 
-                  <div className="timeline-capsule-row">
-                    <div className="timeline-date-capsule">
-                      <Lock size={15} />
-                      <span>21 NOV • 06:00 PM</span>
+                  <div className="spec-card">
+                    <div className="spec-card-icon-box">
+                      <Building size={24} />
                     </div>
-                    <div className="timeline-info-box">
-                      <h4 className="timeline-h4 font-serif">Vaulting Deposit Window Opens</h4>
-                      <p className="timeline-p">
-                        Complimentary on-site armed vault opens for overnight jewelry safe-keeping. Strict dual-custody verification slips will be issued for overnight stock.
+                    <div className="spec-card-body">
+                      <h3 className="spec-card-title font-serif">Silver Wholesalers &amp; Distributors</h3>
+                      <p className="spec-card-desc">
+                        Large-scale suppliers serving retailers and jewellery businesses across India and international markets.
                       </p>
                     </div>
                   </div>
 
-                  <div className="timeline-capsule-row highlight">
-                    <div className="timeline-date-capsule pink">
-                      <Sparkles size={15} />
-                      <span>22 – 24 NOV • 10:00 AM</span>
+                  <div className="spec-card">
+                    <div className="spec-card-icon-box">
+                      <Award size={24} />
                     </div>
-                    <div className="timeline-info-box">
-                      <h4 className="timeline-h4 font-serif">Exhibition Open to Trade Buyers</h4>
-                      <p className="timeline-p">
-                        Three full days of high-velocity wholesale dealmaking, sourcing meetings, and bullion transactions across Hall A, B, and C.
+                    <div className="spec-card-body">
+                      <h3 className="spec-card-title font-serif">Kundan, Meena &amp; Jadau Artisans</h3>
+                      <p className="spec-card-desc">
+                        Skilled craftsmen showcasing Jaipur’s traditional jewellery-making techniques on silver.
                       </p>
                     </div>
                   </div>
 
-                  <div className="timeline-capsule-row">
-                    <div className="timeline-date-capsule">
-                      <Clock size={15} />
-                      <span>24 NOV • 07:30 PM</span>
+                  <div className="spec-card">
+                    <div className="spec-card-icon-box">
+                      <Sparkles size={24} />
                     </div>
-                    <div className="timeline-info-box">
-                      <h4 className="timeline-h4 font-serif">Show Conclusion &amp; Stock Clearance</h4>
-                      <p className="timeline-p">
-                        Official packing and booth hand-back protocol starts under security surveillance. Gate passes will be stamped upon verification of exhibition clearances.
+                    <div className="spec-card-body">
+                      <h3 className="spec-card-title font-serif">Moissanite &amp; Polki Jewellers</h3>
+                      <p className="spec-card-desc">
+                        Jewellers presenting high-end fashion jewellery featuring silver with Moissanite, Polki, and diamond-inspired accents.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="spec-card full-width">
+                    <div className="spec-card-icon-box">
+                      <Coins size={24} />
+                    </div>
+                    <div className="spec-card-body">
+                      <h3 className="spec-card-title font-serif">Handcrafted Jewellery &amp; Artefact Brands</h3>
+                      <p className="spec-card-desc">
+                        Businesses offering handmade jewellery, silverware, idols, corporate gifts, traditional artefacts, and lifestyle products.
                       </p>
                     </div>
                   </div>
                 </div>
               </RevealSection>
-            </div>
-          </div>
 
-          {/* Exclusive Exhibitor Amenities */}
-          <div className="portal-content-section">
-            <div className="container">
+              {/* Ideal Exhibitors Box */}
               <RevealSection>
-                <div className="portal-section-head">
-                  <span className="portal-section-kicker">PREMIUM INFRASTRUCTURE</span>
-                  <h2 className="portal-section-title font-serif">Exhibitor Privileges &amp; Security</h2>
-                  <p className="portal-section-subtitle">World-class facilities engineered for seamless high-value silver transactions.</p>
-                </div>
-
-                <div className="portal-amenities-grid">
-                  <div className="amenity-capsule-card">
-                    <div className="amenity-ico-wrap"><Lock size={24} /></div>
-                    <h3 className="amenity-title">24/7 Armed Guarded Vaults</h3>
-                    <p className="amenity-desc">Complimentary reinforced vaulting facility inside Birla Auditorium with CCTV recording and dual-key custody.</p>
+                <div className="ideal-banner-box">
+                  <div className="ideal-banner-header">
+                    <BadgeCheck size={22} className="ideal-header-icon" />
+                    <div>
+                      <h3 className="ideal-title font-serif">Ideal Exhibitors</h3>
+                      <p className="ideal-subtitle">Key stakeholder segments represented across our 300+ booths</p>
+                    </div>
                   </div>
-
-                  <div className="amenity-capsule-card">
-                    <div className="amenity-ico-wrap"><Coffee size={24} /></div>
-                    <h3 className="amenity-title">VIP B2B Sourcing Lounge</h3>
-                    <p className="amenity-desc">Air-conditioned private meeting pods with high-speed WiFi and refreshments to finalize large bulk retail orders.</p>
-                  </div>
-
-                  <div className="amenity-capsule-card">
-                    <div className="amenity-ico-wrap"><BadgeCheck size={24} /></div>
-                    <h3 className="amenity-title">Express Badge Clearance</h3>
-                    <p className="amenity-desc">Dedicated exhibitor badge registration counters for you and your staff with immediate barcode laminate issuance.</p>
-                  </div>
-
-                  <div className="amenity-capsule-card">
-                    <div className="amenity-ico-wrap"><Globe2 size={24} /></div>
-                    <h3 className="amenity-title">National Buyer Directory</h3>
-                    <p className="amenity-desc">Your company details published in the official JSA 2026 Directory distributed to top jewelry chains across India.</p>
+                  <div className="ideal-pills-wrap">
+                    {[
+                      "Manufacturers",
+                      "Wholesalers",
+                      "Distributors",
+                      "Exporters",
+                      "Artisans",
+                      "Jewellery Designers",
+                      "Silverware Brands",
+                      "Handcrafted Product Businesses",
+                      "Lifestyle & Fashion Brands"
+                    ].map((pill, i) => (
+                      <span key={i} className="ideal-pill-item">
+                        <CheckCircle2 size={13} className="ideal-pill-check" />
+                        <span>{pill}</span>
+                      </span>
+                    ))}
                   </div>
                 </div>
               </RevealSection>
@@ -1591,11 +1512,11 @@ export default function App() {
               <div className="portal-cta-capsule">
                 <div className="portal-cta-text">
                   <span className="cta-kicker">CONNECT TO GROWTH</span>
-                  <h2 className="cta-h2 font-serif">Ready to Exhibit at Jaipur Silver Show 2026?</h2>
+                  <h2 className="cta-h2 font-serif">Ready to Exhibit at JSA Silver Show 2026?</h2>
                   <p className="cta-p">Submit your space intent now to lock your preferred booth location and connect with pan-India retail buyers.</p>
                 </div>
                 <div className="portal-cta-actions">
-                  <button onClick={() => goToRegister('exhibitor')} className="btn-cta-primary">
+                  <button onClick={goToForm} className="btn-cta-primary">
                     <span>Submit Exhibitor Intent Form</span>
                     <ArrowRight size={15} />
                   </button>
@@ -1609,8 +1530,9 @@ export default function App() {
         </main>
       )}
 
+
       {/* ========================================================
-          PAGE 4: TRADE VISITORS PORTAL & PROFILE (BROCHURE ACCREDITED)
+          PAGE 4: TRADE VISITOR PROFILE
           ======================================================== */}
       {currentPage === 'visitor-alerts' && (
         <main className="page-content visitor-page-root">
@@ -1621,401 +1543,201 @@ export default function App() {
                 <div className="portal-hero-content">
                   <span className="portal-pill-badge visitor-badge">
                     <Sparkles size={14} />
-                    <span>COMPLIMENTARY TRADE ACCREDITATION • JSA 2026</span>
+                    <span>TRADE VISITOR PROFILE • JSA SILVER SHOW 2026</span>
                   </span>
                   <h1 className="portal-hero-title font-serif">
-                    Visitors Profile &amp; Express Pass
+                    Visitor Profile
                   </h1>
+                  <h2 className="portal-hero-subheading font-serif">
+                    Who Will Visit?
+                  </h2>
                   <p className="portal-hero-lead">
-                    Connect directly with India's leading silver jewelry manufacturers, wholesalers, and master artisans under one roof at Birla Auditorium, Jaipur.
+                    The exhibition brings together buyers, retailers, designers, industry professionals, institutions, and jewellery enthusiasts looking to discover new products, suppliers, and business opportunities.
                   </p>
                   <div className="portal-hero-actions">
                     <button 
-                      onClick={() => goToRegister('visitor')}
+                      onClick={goToForm}
                       className="btn-portal-primary"
                     >
-                      <BadgeCheck size={16} />
-                      <span>GET FREE VISITOR PASS (INSTANT QR)</span>
+                      <Users size={15} />
+                      <span>REGISTER AS VISITOR (FREE PASS)</span>
                       <ArrowRight size={14} />
                     </button>
-                    <a 
-                      href="#visitor-profiles" 
+                    <button 
+                      onClick={() => setCurrentPage('contact')} 
                       className="btn-portal-secondary"
                     >
-                      <LayoutGrid size={15} />
-                      <span>EXPLORE VISITOR PROFILES</span>
-                    </a>
+                      <MapPin size={15} />
+                      <span>VENUE &amp; SCHEDULE</span>
+                    </button>
                   </div>
                 </div>
               </RevealSection>
             </div>
           </div>
 
-          {/* Quick Metrics Strip */}
-          <div className="portal-metrics-section">
-            <div className="container">
-              <RevealSection>
-                <div className="portal-metrics-grid">
-                  <div className="metric-capsule-item">
-                    <div className="metric-num font-serif">FREE</div>
-                    <div className="metric-label">Complimentary Trade Entry Pass</div>
-                  </div>
-                  <div className="metric-capsule-item">
-                    <div className="metric-num font-serif">300+</div>
-                    <div className="metric-label">Designer Exhibition Booths</div>
-                  </div>
-                  <div className="metric-capsule-item">
-                    <div className="metric-num font-serif">Direct</div>
-                    <div className="metric-label">Manufacturer Wholesale Sourcing</div>
-                  </div>
-                  <div className="metric-capsule-item">
-                    <div className="metric-num font-serif">Instant</div>
-                    <div className="metric-label">Digital QR Pass on Mobile</div>
-                  </div>
-                </div>
-              </RevealSection>
-            </div>
-          </div>
-
-          {/* Core Feature: Visitors Profile (from Official Brochure Page 3) */}
-          <div id="visitor-profiles" className="portal-content-section">
-            <div className="container">
-              <RevealSection>
-                <div className="portal-section-head">
-                  <span className="portal-section-kicker">TARGET AUDIENCE</span>
-                  <h2 className="portal-section-title font-serif">Visitors Profile</h2>
-                  <p className="portal-section-subtitle">Who should attend — curated categories of trade buyers and industry decision-makers visiting the show.</p>
-                </div>
-
-                <div className="portal-profile-grid">
-                  {/* Retailers & Large-Scale Buyers */}
-                  <div className="profile-card">
-                    <span className="profile-badge-pill pink">RETAIL BUYERS</span>
-                    <h3 className="profile-card-title font-serif">Jewellery Showroom Owners</h3>
-                    <p className="profile-card-desc">
-                      Retailers expanding their inventories with 925 sterling silver, silver artefacts, and utensils.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Showroom Chains</span>
-                      <span className="profile-tag">925 Sterling</span>
-                      <span className="profile-tag">Utensils &amp; Gifts</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-card">
-                    <span className="profile-badge-pill pink">LIFESTYLE</span>
-                    <h3 className="profile-card-title font-serif">Boutique &amp; Lifestyle Store Owners</h3>
-                    <p className="profile-card-desc">
-                      Curators sourcing contemporary fusion jewellery, silver-accented handbags, and designer watches.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Fashion Boutiques</span>
-                      <span className="profile-tag">Designer Watches</span>
-                      <span className="profile-tag">Fusion Jewellery</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-card">
-                    <span className="profile-badge-pill pink">RETAIL CHAINS</span>
-                    <h3 className="profile-card-title font-serif">Departmental Store Buyers</h3>
-                    <p className="profile-card-desc">
-                      Category managers from major retail chains looking for corporate silver gifts and festive silverware.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Corporate Gifts</span>
-                      <span className="profile-tag">Festive Silver</span>
-                      <span className="profile-tag">Retail Chains</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-card">
-                    <span className="profile-badge-pill pink">DIGITAL CHANNELS</span>
-                    <h3 className="profile-card-title font-serif">E-commerce &amp; Online Sellers</h3>
-                    <p className="profile-card-desc">
-                      Digital brands and marketplace sellers searching for trending, lightweight silver ornaments for online retail.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Lightweight Silver</span>
-                      <span className="profile-tag">Online Marketplaces</span>
-                      <span className="profile-tag">D2C Brands</span>
-                    </div>
-                  </div>
-
-                  {/* Wholesalers & Trade Intermediaries */}
-                  <div className="profile-card">
-                    <span className="profile-badge-pill blue">WHOLESALE</span>
-                    <h3 className="profile-card-title font-serif">Silver Jewellery Wholesalers</h3>
-                    <p className="profile-card-desc">
-                      Bulk buyers looking to establish direct sourcing channels with manufacturers from Jaipur and other craft hubs.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Direct Factory Sourcing</span>
-                      <span className="profile-tag">Jaipur Craft Hubs</span>
-                      <span className="profile-tag">Volume Pricing</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-card">
-                    <span className="profile-badge-pill blue">GLOBAL TRADE</span>
-                    <h3 className="profile-card-title font-serif">Importers &amp; Exporters</h3>
-                    <p className="profile-card-desc">
-                      International trading houses procuring traditional Indian handcrafted silver for global markets.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Export Houses</span>
-                      <span className="profile-tag">Global Markets</span>
-                      <span className="profile-tag">Handcrafted Silver</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-card">
-                    <span className="profile-badge-pill blue">DISTRIBUTION</span>
-                    <h3 className="profile-card-title font-serif">Distributors &amp; Commission Agents</h3>
-                    <p className="profile-card-desc">
-                      Middlemen supplying regional markets and local independent retail shops across India.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Regional Distribution</span>
-                      <span className="profile-tag">Supply Networks</span>
-                      <span className="profile-tag">Retail Connect</span>
-                    </div>
-                  </div>
-
-                  {/* Design & Corporate Professionals */}
-                  <div className="profile-card">
-                    <span className="profile-badge-pill gold">DESIGN</span>
-                    <h3 className="profile-card-title font-serif">Jewellery Designers &amp; Consultants</h3>
-                    <p className="profile-card-desc">
-                      Professionals tracking upcoming trends, silver purity innovations, and manufacturing techniques.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Trend Forecasting</span>
-                      <span className="profile-tag">Purity Innovations</span>
-                      <span className="profile-tag">CAD &amp; Design</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-card">
-                    <span className="profile-badge-pill gold">CORPORATE</span>
-                    <h3 className="profile-card-title font-serif">Corporate Gift Buyers</h3>
-                    <p className="profile-card-desc">
-                      Procurement managers from corporate firms sourcing premium silver corporate tokens, coins, and custom artefacts.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Silver Coins</span>
-                      <span className="profile-tag">Custom Tokens</span>
-                      <span className="profile-tag">Executive Gifting</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-card">
-                    <span className="profile-badge-pill gold">FASHION</span>
-                    <h3 className="profile-card-title font-serif">Fashion Stylists &amp; Influencers</h3>
-                    <p className="profile-card-desc">
-                      Creative professionals sourcing statement silver pieces for media, films, and runway styling.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Runway Styling</span>
-                      <span className="profile-tag">Media &amp; Films</span>
-                      <span className="profile-tag">Statement Jewellery</span>
-                    </div>
-                  </div>
-
-                  {/* Industry Influencers & Institutions */}
-                  <div className="profile-card">
-                    <span className="profile-badge-pill purple">INSTITUTIONAL</span>
-                    <h3 className="profile-card-title font-serif">Buying Houses &amp; Sourcing Agents</h3>
-                    <p className="profile-card-desc">
-                      Representatives acting on behalf of major international brands and global retail conglomerates.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Global Conglomerates</span>
-                      <span className="profile-tag">Sourcing Delegations</span>
-                      <span className="profile-tag">Quality Audits</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-card">
-                    <span className="profile-badge-pill purple">ASSOCIATIONS</span>
-                    <h3 className="profile-card-title font-serif">Trade Association Delegations</h3>
-                    <p className="profile-card-desc">
-                      Organised groups of buyers from regional gemstone, silver, and gold associations across India.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Regional Associations</span>
-                      <span className="profile-tag">Pan-India Buyers</span>
-                      <span className="profile-tag">B2B Delegations</span>
-                    </div>
-                  </div>
-
-                  <div className="profile-card">
-                    <span className="profile-badge-pill purple">ACADEMIA</span>
-                    <h3 className="profile-card-title font-serif">Students &amp; Academicians</h3>
-                    <p className="profile-card-desc">
-                      Advanced students from prominent gemological and design institutes studying silver craftsmanship.
-                    </p>
-                    <div className="profile-card-tags">
-                      <span className="profile-tag">Design Institutes</span>
-                      <span className="profile-tag">Gemology Scholars</span>
-                      <span className="profile-tag">Master Craftsmanship</span>
-                    </div>
-                  </div>
-                </div>
-              </RevealSection>
-            </div>
-          </div>
-
-          {/* Exhibition Halls Breakdown */}
-          <div id="visitor-halls" className="portal-content-section au-tinted">
-            <div className="container">
-              <RevealSection>
-                <div className="portal-section-head">
-                  <span className="portal-section-kicker">SOURCING DIRECTORY</span>
-                  <h2 className="portal-section-title font-serif">What You Will Discover Across 3 Halls</h2>
-                  <p className="portal-section-subtitle">Curated zones spanning handcrafted royal heirlooms to high-tech casting innovations.</p>
-                </div>
-
-                <div className="portal-cards-grid three-col">
-                  <div className="portal-capsule-card hall-card-a">
-                    <div className="hall-tag-capsule pill-a">HALL A</div>
-                    <h3 className="hall-card-name font-serif">Fine &amp; Royal Jewellery</h3>
-                    <p className="hall-card-desc">Bridal silver sets, antique kundan jadau, intricate filigree, temple ornaments, and 925 sterling daily wear.</p>
-                    <div className="hall-card-highlights">
-                      <span className="highlight-pill">Antique Filigree</span>
-                      <span className="highlight-pill">Bridal Necklaces</span>
-                      <span className="highlight-pill">Sterling CZ Lines</span>
-                      <span className="highlight-pill">Export Collections</span>
-                    </div>
-                  </div>
-
-                  <div className="portal-capsule-card hall-card-b">
-                    <div className="hall-tag-capsule pill-b">HALL B</div>
-                    <h3 className="hall-card-name font-serif">Artifacts &amp; Silverware</h3>
-                    <p className="hall-card-desc">Royal dinnerware, hand-carved temple idols, ceremonial pooja silver, commemorative coins, and corporate gifting.</p>
-                    <div className="hall-card-highlights">
-                      <span className="highlight-pill">Royal Dinner Sets</span>
-                      <span className="highlight-pill">Temple Idols</span>
-                      <span className="highlight-pill">Bullion Coins</span>
-                      <span className="highlight-pill">Corporate Gifting</span>
-                    </div>
-                  </div>
-
-                  <div className="portal-capsule-card hall-card-c">
-                    <div className="hall-tag-capsule pill-c">HALL C</div>
-                    <h3 className="hall-card-name font-serif">Machinery &amp; Allied Tech</h3>
-                    <p className="hall-card-desc">Laser soldering, 3D wax printers, induction casting furnaces, purity spectrometers, and packaging equipment.</p>
-                    <div className="hall-card-highlights">
-                      <span className="highlight-pill">Laser Welding</span>
-                      <span className="highlight-pill">3D CAD Casting</span>
-                      <span className="highlight-pill">XRF Spectrometers</span>
-                      <span className="highlight-pill">Packaging &amp; Trays</span>
-                    </div>
-                  </div>
-                </div>
-              </RevealSection>
-            </div>
-          </div>
-
-          {/* Visiting Protocol & Essential Guidelines */}
+          {/* 4 Visitor Categories */}
           <div className="portal-content-section">
             <div className="container">
               <RevealSection>
                 <div className="portal-section-head">
-                  <span className="portal-section-kicker">VISITING GUIDELINES</span>
-                  <h2 className="portal-section-title font-serif">Entry Schedule &amp; Gates</h2>
-                  <p className="portal-section-subtitle">Smooth entry procedures for trade delegates, sourcing professionals, and store owners.</p>
+                  <span className="portal-section-kicker">BUYER CATEGORIES</span>
+                  <h2 className="portal-section-title font-serif">Who Will Visit?</h2>
+                  <p className="portal-section-subtitle">
+                    The exhibition brings together buyers, retailers, designers, industry professionals, institutions, and jewellery enthusiasts looking to discover new products, suppliers, and business opportunities.
+                  </p>
                 </div>
 
-                <div className="portal-timeline-stack">
-                  <div className="timeline-capsule-row">
-                    <div className="timeline-date-capsule">
-                      <Calendar size={15} />
-                      <span>22 – 24 NOV 2026</span>
+                <div className="visitor-categories-list">
+                  {/* Category 1 */}
+                  <div className="visitor-category-group">
+                    <div className="vcat-header">
+                      <div className="vcat-icon-badge">
+                        <Store size={22} />
+                      </div>
+                      <div>
+                        <h3 className="vcat-title font-serif">Retailers &amp; Large-Scale Buyers</h3>
+                        <p className="vcat-sub">Showroom operators, curated boutique stores, department stores, and online retail leaders.</p>
+                      </div>
                     </div>
-                    <div className="timeline-info-box">
-                      <h4 className="timeline-h4 font-serif">Dates &amp; Exhibition Visiting Hours</h4>
-                      <p className="timeline-p">
-                        Open daily from <strong>10:00 AM to 07:00 PM</strong> at Birla Auditorium, Jaipur. Sourcing lounges and live trading pavilions remain active all three days.
-                      </p>
+                    <div className="vcat-items-grid">
+                      <div className="vcat-item-card">
+                        <div className="vcat-item-crest"><CheckCircle2 size={16} /></div>
+                        <div className="vcat-item-content">
+                          <h4 className="vcat-item-name">Jewellery Showroom Owners</h4>
+                          <p className="vcat-item-desc">Retailers expanding their inventory with 925 sterling silver jewellery, silver artefacts, and utensils.</p>
+                        </div>
+                      </div>
+                      <div className="vcat-item-card">
+                        <div className="vcat-item-crest"><CheckCircle2 size={16} /></div>
+                        <div className="vcat-item-content">
+                          <h4 className="vcat-item-name">Boutique &amp; Lifestyle Store Owners</h4>
+                          <p className="vcat-item-desc">Curators sourcing contemporary jewellery, silverware, handbags, and designer accessories.</p>
+                        </div>
+                      </div>
+                      <div className="vcat-item-card">
+                        <div className="vcat-item-crest"><CheckCircle2 size={16} /></div>
+                        <div className="vcat-item-content">
+                          <h4 className="vcat-item-name">Department Store Buyers</h4>
+                          <p className="vcat-item-desc">Category managers looking for major retail collections, corporate silver gifts, and festive silverware.</p>
+                        </div>
+                      </div>
+                      <div className="vcat-item-card">
+                        <div className="vcat-item-crest"><CheckCircle2 size={16} /></div>
+                        <div className="vcat-item-content">
+                          <h4 className="vcat-item-name">E-commerce &amp; Online Sellers</h4>
+                          <p className="vcat-item-desc">Digital brands and marketplaces seeking trending, lightweight, and distinctive silver products for online retail.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Category 2 */}
+                  <div className="visitor-category-group">
+                    <div className="vcat-header">
+                      <div className="vcat-icon-badge">
+                        <Globe2 size={22} />
+                      </div>
+                      <div>
+                        <h3 className="vcat-title font-serif">Wholesalers &amp; Trade Intermediaries</h3>
+                        <p className="vcat-sub">Sourcing conduits, national distributors, and international trade exporters.</p>
+                      </div>
+                    </div>
+                    <div className="vcat-items-grid three-col">
+                      <div className="vcat-item-card">
+                        <div className="vcat-item-crest"><CheckCircle2 size={16} /></div>
+                        <div className="vcat-item-content">
+                          <h4 className="vcat-item-name">Silver Jewellery Wholesalers</h4>
+                          <p className="vcat-item-desc">Bulk buyers seeking reliable sourcing channels and manufacturers from Jaipur and other craft hubs.</p>
+                        </div>
+                      </div>
+                      <div className="vcat-item-card">
+                        <div className="vcat-item-crest"><CheckCircle2 size={16} /></div>
+                        <div className="vcat-item-content">
+                          <h4 className="vcat-item-name">Importers &amp; Exporters</h4>
+                          <p className="vcat-item-desc">International trading houses looking for traditional Indian handcrafted silver products.</p>
+                        </div>
+                      </div>
+                      <div className="vcat-item-card">
+                        <div className="vcat-item-crest"><CheckCircle2 size={16} /></div>
+                        <div className="vcat-item-content">
+                          <h4 className="vcat-item-name">Distributors &amp; Commission Agents</h4>
+                          <p className="vcat-item-desc">Trade intermediaries supplying regional markets and local independent retailers.</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="timeline-capsule-row">
-                    <div className="timeline-date-capsule">
-                      <MapPin size={15} />
-                      <span>GATE 1 &amp; GATE 2</span>
+                  {/* Category 3 */}
+                  <div className="visitor-category-group">
+                    <div className="vcat-header">
+                      <div className="vcat-icon-badge">
+                        <Sparkles size={22} />
+                      </div>
+                      <div>
+                        <h3 className="vcat-title font-serif">Design &amp; Corporate Professionals</h3>
+                        <p className="vcat-sub">Trend forecasters, corporate procurement heads, and media stylists.</p>
+                      </div>
                     </div>
-                    <div className="timeline-info-box">
-                      <h4 className="timeline-h4 font-serif">Birla Auditorium Entry Points</h4>
-                      <p className="timeline-p">
-                        Accredited visitors can access through Gate 1 (Statue Circle Main Gate) or Gate 2 (Bhawani Singh Marg). Dedicated badge printing kiosks are positioned at both foyers.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="timeline-capsule-row highlight">
-                    <div className="timeline-date-capsule pink">
-                      <BadgeCheck size={15} />
-                      <span>DIGITAL QR PASS</span>
-                    </div>
-                    <div className="timeline-info-box">
-                      <h4 className="timeline-h4 font-serif">15-Second Instant Badge Handover</h4>
-                      <p className="timeline-p">
-                        Pre-registered visitors show their digital mobile QR code at Counter #4 or Self-Scan Kiosk for instant visitor lanyard printing with zero queue waiting.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="timeline-capsule-row">
-                    <div className="timeline-date-capsule">
-                      <ShieldCheck size={15} />
-                      <span>BUSINESS ID MANDATORY</span>
-                    </div>
-                    <div className="timeline-info-box">
-                      <h4 className="timeline-h4 font-serif">Trade Accreditation Verification</h4>
-                      <p className="timeline-p">
-                        Please carry your business card (visiting card) or GST registration copy, along with an official government photo ID (Aadhar / PAN / Driving License).
-                      </p>
+                    <div className="vcat-items-grid three-col">
+                      <div className="vcat-item-card">
+                        <div className="vcat-item-crest"><CheckCircle2 size={16} /></div>
+                        <div className="vcat-item-content">
+                          <h4 className="vcat-item-name">Jewellery Designers &amp; Consultants</h4>
+                          <p className="vcat-item-desc">Professionals tracking jewellery trends, silver innovations, purity standards, and manufacturing techniques.</p>
+                        </div>
+                      </div>
+                      <div className="vcat-item-card">
+                        <div className="vcat-item-crest"><CheckCircle2 size={16} /></div>
+                        <div className="vcat-item-content">
+                          <h4 className="vcat-item-name">Corporate Gift Buyers</h4>
+                          <p className="vcat-item-desc">Procurement teams sourcing premium silver corporate gifts, coins, trophies, and customised artefacts.</p>
+                        </div>
+                      </div>
+                      <div className="vcat-item-card">
+                        <div className="vcat-item-crest"><CheckCircle2 size={16} /></div>
+                        <div className="vcat-item-content">
+                          <h4 className="vcat-item-name">Fashion Stylists &amp; Influencers</h4>
+                          <p className="vcat-item-desc">Creative professionals sourcing statement silver pieces for fashion, media, films, and styling.</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </RevealSection>
-            </div>
-          </div>
 
-          {/* Visitor Hospitality & Amenities */}
-          <div className="portal-content-section au-tinted">
-            <div className="container">
-              <RevealSection>
-                <div className="portal-section-head">
-                  <span className="portal-section-kicker">HOSPITALITY</span>
-                  <h2 className="portal-section-title font-serif">Visitor Hospitality &amp; Services</h2>
-                  <p className="portal-section-subtitle">Engineered to make your sourcing trip productive, comfortable, and secure.</p>
-                </div>
-
-                <div className="portal-amenities-grid">
-                  <div className="amenity-capsule-card">
-                    <div className="amenity-ico-wrap"><Car size={24} /></div>
-                    <h3 className="amenity-title">Complimentary Valet Parking</h3>
-                    <p className="amenity-desc">Hassle-free parking inside Birla Auditorium grounds for all pre-registered trade delegates.</p>
-                  </div>
-
-                  <div className="amenity-capsule-card">
-                    <div className="amenity-ico-wrap"><Coffee size={24} /></div>
-                    <h3 className="amenity-title">B2B Trade Lounges &amp; Cafes</h3>
-                    <p className="amenity-desc">Relaxed seating zones with complimentary beverages for in-depth commercial negotiations.</p>
-                  </div>
-
-                  <div className="amenity-capsule-card">
-                    <div className="amenity-ico-wrap"><Scale size={24} /></div>
-                    <h3 className="amenity-title">Spot Purity Testing Desk</h3>
-                    <p className="amenity-desc">Free government standard purity testing on-site to verify 925 and 999 authenticity on purchases.</p>
-                  </div>
-
-                  <div className="amenity-capsule-card">
-                    <div className="amenity-ico-wrap"><Building size={24} /></div>
-                    <h3 className="amenity-title">Secure Insured Cargo Desks</h3>
-                    <p className="amenity-desc">On-site secure logistics and express transit services (Secure Global Logistics) for wholesale stock transport.</p>
+                  {/* Category 4 */}
+                  <div className="visitor-category-group">
+                    <div className="vcat-header">
+                      <div className="vcat-icon-badge">
+                        <Building size={22} />
+                      </div>
+                      <div>
+                        <h3 className="vcat-title font-serif">Industry Influencers &amp; Institutions</h3>
+                        <p className="vcat-sub">Global buying agencies, trade delegations, and academic design researchers.</p>
+                      </div>
+                    </div>
+                    <div className="vcat-items-grid three-col">
+                      <div className="vcat-item-card">
+                        <div className="vcat-item-crest"><CheckCircle2 size={16} /></div>
+                        <div className="vcat-item-content">
+                          <h4 className="vcat-item-name">Buying Houses &amp; Sourcing Agents</h4>
+                          <p className="vcat-item-desc">Representatives sourcing products for international brands and large retail organisations.</p>
+                        </div>
+                      </div>
+                      <div className="vcat-item-card">
+                        <div className="vcat-item-crest"><CheckCircle2 size={16} /></div>
+                        <div className="vcat-item-content">
+                          <h4 className="vcat-item-name">Trade Association Delegations</h4>
+                          <p className="vcat-item-desc">Organised groups of buyers and industry representatives from the gemstone, silver, and gold sectors.</p>
+                        </div>
+                      </div>
+                      <div className="vcat-item-card">
+                        <div className="vcat-item-crest"><CheckCircle2 size={16} /></div>
+                        <div className="vcat-item-content">
+                          <h4 className="vcat-item-name">Students &amp; Academicians</h4>
+                          <p className="vcat-item-desc">Students and researchers from jewellery, gemology, design, and related institutes exploring silver craftsmanship and industry practices.</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </RevealSection>
@@ -2032,8 +1754,8 @@ export default function App() {
                   <p className="cta-p">Skip on-site lines and receive your instant digital badge directly on WhatsApp/Email.</p>
                 </div>
                 <div className="portal-cta-actions">
-                  <button onClick={() => goToRegister('visitor')} className="btn-cta-primary">
-                    <span>Register as Visitor (Free)</span>
+                  <button onClick={goToForm} className="btn-cta-primary">
+                    <span>Register as Visitor (Free Pass)</span>
                     <ArrowRight size={15} />
                   </button>
                   <button onClick={() => setCurrentPage('contact')} className="btn-cta-secondary">
@@ -2046,7 +1768,8 @@ export default function App() {
         </main>
       )}
 
-      {/* ========================================================
+
+{/* ========================================================
           PAGE 5: GALLERY
           ======================================================== */}
       {currentPage === 'gallery' && (
@@ -2102,7 +1825,7 @@ export default function App() {
                 <RevealSection delay="delay-3">
                   <div className="gallery-item">
                     <img src="/jsa-show-logo.jpg" alt="JSA Emblem" />
-                    <div className="g-caption">Jaipur Silver Association Identity</div>
+                    <div className="g-caption">JSA Silver Show Identity</div>
                   </div>
                 </RevealSection>
               </div>
@@ -2118,7 +1841,7 @@ export default function App() {
         <main className="page-content">
           <ContactPage 
             onGoHome={() => setCurrentPage('home')}
-            onGoToRegister={goToRegister}
+            onGoToForm={goToForm}
           />
         </main>
       )}
@@ -2130,7 +1853,7 @@ export default function App() {
             <div className="cta-banner-content">
               <span className="cta-pill-kicker">
                 <span className="live-sparkle-dot"></span>
-                22 – 24 NOVEMBER 2026 • BIRLA AUDITORIUM, JAIPUR
+                22, 23, 24 NOVEMBER 2026 • BM BIRLA AUDITORIUM, JAIPUR
               </span>
               <h2 className="cta-banner-title font-serif">
                 Be Part of Jaipur's Silver Legacy
@@ -2140,14 +1863,14 @@ export default function App() {
               </p>
               <div className="cta-btn-cluster">
                 <button 
-                  onClick={() => goToRegister('visitor')}
+                  onClick={goToForm}
                   className="btn-cta-primary"
                 >
                   <span>Register as Visitor (Free Pass)</span>
                   <ArrowRight size={16} />
                 </button>
                 <button 
-                  onClick={() => goToRegister('exhibitor')} 
+                  onClick={goToForm} 
                   className="btn-cta-secondary"
                 >
                   <span>Book a Booth / Exhibitor Intent</span>
@@ -2167,10 +1890,10 @@ export default function App() {
             <div className="footer-brand-col">
               <div className="footer-brand-header">
                 <div className="footer-logo-wrap">
-                  <img src="/jsa-show-logo.jpg" alt="Jaipur Silver Association" className="footer-logo" />
+                  <img src="/jsa-show-logo.jpg" alt="JSA Silver Show" className="footer-logo" />
                 </div>
                 <div>
-                  <h3 className="f-title font-serif">Jaipur Silver Association</h3>
+                  <h3 className="f-title font-serif">JSA Silver Show</h3>
                   <span className="f-sub">B2B TRADE EXHIBITION • JAIPUR 2026</span>
                 </div>
               </div>
@@ -2197,9 +1920,9 @@ export default function App() {
             <div className="footer-col">
               <h4 className="f-head">EXHIBITION</h4>
               <ul className="f-links">
-                <li><button onClick={() => goToRegister('visitor')}>Visitor Pass Registration</button></li>
-                <li><button onClick={() => goToRegister('exhibitor')}>Exhibitor Intent Form</button></li>
-                <li><button onClick={() => goToRegister('exhibitor')}>Booths & Floor Plan</button></li>
+                <li><button onClick={goToForm}>Visitor Pass Registration</button></li>
+                <li><button onClick={goToForm}>Exhibitor Intent Form</button></li>
+                <li><button onClick={goToForm}>Booths & Floor Plan</button></li>
                 <li><button onClick={() => setCurrentPage('gallery')}>Exhibition Gallery</button></li>
               </ul>
             </div>
@@ -2208,7 +1931,7 @@ export default function App() {
             <div className="footer-col">
               <h4 className="f-head">ASSOCIATION</h4>
               <ul className="f-links">
-                <li><button onClick={() => setCurrentPage('about')}>About JSA</button></li>
+                <li><button onClick={() => setCurrentPage('about')}>About JSA Silver Show</button></li>
                 <li><button onClick={() => setCurrentPage('exhibitor-alerts')}>Exhibitor Alerts</button></li>
                 <li><button onClick={() => setCurrentPage('visitor-alerts')}>Visitor Alerts</button></li>
                 <li><button onClick={() => setCurrentPage('contact')}>Contact Us Helpdesk</button></li>
@@ -2222,7 +1945,7 @@ export default function App() {
               <div className="f-contact-block">
                 <div className="f-contact-line">
                   <MapPin size={15} className="f-c-icon" />
-                  <span>Apex Tower in Lalkothi, Jaipur, India</span>
+                  <span>JSA Silver Show</span>
                 </div>
                 <div className="f-contact-line">
                   <Phone size={15} className="f-c-icon" />
@@ -2242,7 +1965,7 @@ export default function App() {
 
           {/* Clean Divider & Aesthetic Bottom Row */}
           <div className="footer-bottom">
-            <p className="f-copyright">© 2026 Jaipur Silver Association. All rights reserved.</p>
+            <p className="f-copyright">© 2026 JSA Silver Show. All rights reserved.</p>
             <div className="f-bottom-links">
               <a href="#">Privacy Policy</a>
               <span>•</span>
@@ -2251,18 +1974,6 @@ export default function App() {
           </div>
         </div>
       </footer>
-
-      {/* Admin Login Modal Gateway */}
-      {showAdminLogin && (
-        <AdminLogin 
-          onLoginSuccess={() => {
-            setShowAdminLogin(false);
-            setAdminAuth(true);
-            setCurrentPage('admin');
-          }}
-          onCancel={() => setShowAdminLogin(false)}
-        />
-      )}
     </div>
   );
 }

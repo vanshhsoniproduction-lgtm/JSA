@@ -1,67 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   MapPin,
   Phone,
   Mail,
-  Clock,
-  Send,
   CheckCircle2,
   ArrowRight,
-  ShieldCheck,
   Building,
-  User,
-  Sparkles
+  Sparkles,
+  ExternalLink
 } from 'lucide-react';
-import { saveInquiry } from './db';
 import './ContactPage.css';
 
-export default function ContactPage({ onGoHome, onGoToRegister }) {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    company: '',
-    department: 'general',
-    message: ''
-  });
+const FORM_URL = 'https://www.forms.jsasilvershow.com/';
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
-      setErrorMessage('Please fill in your name, email, and message.');
-      return;
-    }
-
-    setIsSubmitting(true);
-    setErrorMessage('');
-
-    try {
-      await saveInquiry({
-        name: formData.name.trim(),
-        email: formData.email.trim(),
-        phone: formData.phone.trim(),
-        company: formData.company.trim(),
-        type: `Contact Inquiry: ${formData.department.toUpperCase()}`,
-        topicId: 'contact',
-        source: 'Dedicated Contact Page',
-        message: formData.message.trim()
-      });
-
-      setIsSubmitting(false);
-      setSubmitted(true);
-    } catch (err) {
-      console.error('Failed to submit contact message:', err);
-      setIsSubmitting(false);
-      setErrorMessage('Could not send message. Please try again or call us directly.');
+export default function ContactPage({ onGoHome, onGoToForm }) {
+  const handleRedirect = () => {
+    if (onGoToForm) {
+      onGoToForm();
+    } else {
+      window.location.href = FORM_URL;
     }
   };
 
@@ -89,7 +46,7 @@ export default function ContactPage({ onGoHome, onGoToRegister }) {
               <Building size={24} />
             </div>
             <h3>Secretariat Office</h3>
-            <p>Apex Tower, Lalkothi, Jaipur, Rajasthan 302015, India</p>
+            <p>JSA Silver Show</p>
             <span className="contact-card-note">Central Administration Office</span>
           </div>
 
@@ -129,125 +86,40 @@ export default function ContactPage({ onGoHome, onGoToRegister }) {
 
         {/* Main 2-Col Layout */}
         <div className="contact-main-grid">
-          {/* Left: Contact Form */}
+          {/* Left: Portal Action Box */}
           <div className="contact-form-box">
-            <h2>Send Us a Direct Message</h2>
+            <span className="contact-kicker">
+              <Sparkles size={14} />
+              CENTRAL APPLICATION PORTAL
+            </span>
+            <h2>Official Registration &amp; Inquiries</h2>
             <p className="form-desc">
-              Submit your inquiry below. Our organizing desk will promptly review and get back to you.
+              All official trade visitor passes, exhibitor space bookings, sponsorship inquiries, and formal secretariat requests for JSA Silver Show 2026 are processed centrally through our official online form portal.
             </p>
 
-            {submitted ? (
-              <div className="contact-success-state">
-                <div className="contact-success-icon">
-                  <CheckCircle2 size={32} />
-                </div>
-                <h3>Inquiry Received Successfully!</h3>
-                <p>
-                  Thank you for reaching out, <strong>{formData.name}</strong>. Your message has been logged in our secretariat desk and an association coordinator will contact you shortly.
-                </p>
-                <button
-                  type="button"
-                  className="btn-solid"
-                  onClick={() => {
-                    setSubmitted(false);
-                    setFormData({
-                      name: '',
-                      email: '',
-                      phone: '',
-                      company: '',
-                      department: 'general',
-                      message: ''
-                    });
-                  }}
-                >
-                  Send Another Inquiry
-                </button>
+            <div className="contact-portal-highlights">
+              <div className="portal-hl-item">
+                <CheckCircle2 size={18} className="text-pink" />
+                <span>Instant Trade Visitor Passes &amp; QR Digital Accreditation</span>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit}>
-                {errorMessage && (
-                  <div style={{ color: '#dc2626', marginBottom: '1rem', fontSize: '0.9rem' }}>
-                    {errorMessage}
-                  </div>
-                )}
+              <div className="portal-hl-item">
+                <CheckCircle2 size={18} className="text-pink" />
+                <span>Exhibitor Stall Intent &amp; Prime Pavilion Selection</span>
+              </div>
+              <div className="portal-hl-item">
+                <CheckCircle2 size={18} className="text-pink" />
+                <span>Direct Secretariat Inquiries &amp; Buyer Matchmaking</span>
+              </div>
+            </div>
 
-                <div className="form-row-2">
-                  <div className="c-field">
-                    <label>Your Full Name *</label>
-                    <input
-                      type="text"
-                      name="name"
-                      required
-                      placeholder="e.g. Ramesh Chandra Soni"
-                      value={formData.name}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="c-field">
-                    <label>Mobile Number</label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      placeholder="e.g. +91 98290XXXXX"
-                      value={formData.phone}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="form-row-2">
-                  <div className="c-field">
-                    <label>Email Address *</label>
-                    <input
-                      type="email"
-                      name="email"
-                      required
-                      placeholder="name@jewellers.com"
-                      value={formData.email}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div className="c-field">
-                    <label>Company / Firm Name</label>
-                    <input
-                      type="text"
-                      name="company"
-                      placeholder="e.g. Royal Silver Arts"
-                      value={formData.company}
-                      onChange={handleChange}
-                    />
-                  </div>
-                </div>
-
-                <div className="c-field">
-                  <label>Department / Subject of Inquiry</label>
-                  <select name="department" value={formData.department} onChange={handleChange}>
-                    <option value="general">General Exhibition Inquiries</option>
-                    <option value="exhibitor">Exhibitor Booth Booking & Floor Plan</option>
-                    <option value="visitor">Visitor Registration & Badges</option>
-                    <option value="sponsorship">Sponsorship & Brand Partnerships</option>
-                    <option value="press">Press, Media & Delegations</option>
-                  </select>
-                </div>
-
-                <div className="c-field">
-                  <label>Message / Details *</label>
-                  <textarea
-                    rows={4}
-                    name="message"
-                    required
-                    placeholder="Provide details about your inquiry, stall size requirements, or questions..."
-                    value={formData.message}
-                    onChange={handleChange}
-                  ></textarea>
-                </div>
-
-                <button type="submit" disabled={isSubmitting} className="btn-contact-submit">
-                  <Send size={16} />
-                  <span>{isSubmitting ? 'Sending Inquiry...' : 'Submit Inquiry'}</span>
-                </button>
-              </form>
-            )}
+            <button
+              type="button"
+              onClick={handleRedirect}
+              className="btn-contact-submit"
+            >
+              <span>Proceed to Official Form</span>
+              <ExternalLink size={16} />
+            </button>
           </div>
 
           {/* Right: Map & Registration CTAs */}
@@ -268,14 +140,14 @@ export default function ContactPage({ onGoHome, onGoToRegister }) {
             </div>
 
             <div className="side-action-card">
-              <h3>Participate in Jaipur Silver Show 2026</h3>
+              <h3>Participate in JSA Silver Show 2026</h3>
               <p>
                 Join over 10,000 verified B2B buyers and 175+ leading silver manufacturers at India's premier silver platform.
               </p>
               <div className="side-action-buttons">
                 <button
                   type="button"
-                  onClick={() => onGoToRegister && onGoToRegister('visitor')}
+                  onClick={handleRedirect}
                   className="btn-side-white"
                 >
                   <span>Register as Trade Visitor (Free)</span>
@@ -283,7 +155,7 @@ export default function ContactPage({ onGoHome, onGoToRegister }) {
                 </button>
                 <button
                   type="button"
-                  onClick={() => onGoToRegister && onGoToRegister('exhibitor')}
+                  onClick={handleRedirect}
                   className="btn-side-outline"
                 >
                   <span>Submit Exhibitor Intent Form</span>
