@@ -326,48 +326,7 @@ export default function SponsorshipPage({ onGoToForm }) {
         </div>
       </section>
 
-      {/* INTERACTIVE CATALOGUE SLIDE VIEWER */}
-      <section className="section-space catalog-slides-section bg-tint border-top-clean border-bottom-clean">
-        <div className="container">
-          <div className="section-head-with-controls">
-            <div>
-              <span className="section-kicker">OFFICIAL BROCHURE PREVIEW</span>
-              <h2 className="section-title font-serif">Browse the Complete Catalogue</h2>
-              <p className="section-lead">Explore all 11 pages of the official JSA Silver Show 2026 Sponsorship Catalog.</p>
-            </div>
-            <a 
-              href="/jsa-sponsorship-catalog.pdf" 
-              download="JSA-Silver-Show-2026-Sponsorship-Catalog.pdf"
-              className="btn-download-catalogue-compact"
-            >
-              <Download size={15} />
-              <span>Download PDF (1.5 MB)</span>
-            </a>
-          </div>
 
-          <div className="catalog-slides-scroller">
-            {CATALOG_SLIDES.map((slide, idx) => (
-              <div 
-                key={slide.page} 
-                className="catalog-slide-thumb-card"
-                onClick={() => openLightbox(idx)}
-              >
-                <div className="slide-thumb-wrap">
-                  <img src={slide.img} alt={slide.label} loading="lazy" />
-                  <div className="slide-overlay">
-                    <Eye size={20} />
-                    <span>Expand</span>
-                  </div>
-                </div>
-                <div className="slide-thumb-info">
-                  <span className="slide-page-badge">Page {slide.page}</span>
-                  <span className="slide-label">{slide.label}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* DIRECT SECRETARIAT CONTACT BANNER */}
       <section className="section-space sponsorship-contact-section">
