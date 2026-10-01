@@ -192,10 +192,6 @@ export default function SponsorshipPage({ onGoToForm }) {
       <section className="sponsorship-hero">
         <div className="container">
           <div className="sponsorship-hero-content">
-            <span className="sponsorship-kicker">
-              <Sparkles size={14} />
-              OFFICIAL SPONSORSHIP PORTFOLIO • JSA SILVER SHOW 2026
-            </span>
             <h1 className="sponsorship-title font-serif">
               Make Your Brand Part of the Show
             </h1>
