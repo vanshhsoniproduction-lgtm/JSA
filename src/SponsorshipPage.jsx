@@ -328,61 +328,7 @@ export default function SponsorshipPage({ onGoToForm }) {
 
 
 
-      {/* DIRECT SECRETARIAT CONTACT BANNER */}
-      <section className="section-space sponsorship-contact-section">
-        <div className="container">
-          <div className="sponsorship-contact-card">
-            <div className="contact-card-content">
-              <span className="sponsorship-kicker">HAVE CUSTOM BRANDING IDEAS?</span>
-              <h2 className="font-serif">Reserve Your Prime Show Placement Today</h2>
-              <p>
-                Sponsorship opportunities are strictly allocated on a first-come, first-served basis. Connect with the JSA Silver Show Secretariat for custom pavilion sponsorships, lanyard branding, or multi-hall packages.
-              </p>
 
-              <div className="sponsorship-desk-contacts">
-                <a href="tel:9216030976" className="desk-contact-item">
-                  <Phone size={18} />
-                  <div>
-                    <span className="contact-type">Booking Hotline</span>
-                    <strong>+91 92160 30976</strong>
-                  </div>
-                </a>
-
-                <a href="mailto:jaipursilverassociation@gmail.com" className="desk-contact-item">
-                  <Mail size={18} />
-                  <div>
-                    <span className="contact-type">Email Secretariat</span>
-                    <strong>jaipursilverassociation@gmail.com</strong>
-                  </div>
-                </a>
-
-                <div className="desk-contact-item">
-                  <MapPin size={18} />
-                  <div>
-                    <span className="contact-type">Show Venue</span>
-                    <strong>B.M. Birla Auditorium, Jaipur</strong>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="contact-card-cta-box">
-              <div className="cta-download-box">
-                <h4>Official Catalogue</h4>
-                <p>Complete rate card, technical dimensions, and branding specs.</p>
-                <a 
-                  href="/jsa-sponsorship-catalog.pdf" 
-                  download="JSA-Silver-Show-2026-Sponsorship-Catalog.pdf"
-                  className="btn-download-catalogue w-full"
-                >
-                  <Download size={16} />
-                  <span>Download Catalogue</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* FULLSCREEN LIGHTBOX MODAL */}
       {selectedSlide !== null && (
