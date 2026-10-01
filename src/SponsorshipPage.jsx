@@ -188,36 +188,37 @@ export default function SponsorshipPage({ onGoToForm }) {
 
   return (
     <div className="sponsorship-page animate-fade-in">
-      {/* HERO BANNER */}
+      {/* PROFESSIONAL MINIMAL HERO */}
       <section className="sponsorship-hero">
         <div className="container">
           <div className="sponsorship-hero-content">
+            <span className="sponsorship-eyebrow">B2B PARTNERSHIPS &amp; BRANDING</span>
             <h1 className="sponsorship-title font-serif">
-              Make Your Brand Part of the Show
+              Make Your Brand <em>Part of the Show</em>
             </h1>
             <p className="sponsorship-subtitle">
               Be a part of India's most premier B2B Silver Show. Elevate your brand presence before 15,000+ verified trade buyers, bullion refiners, jewellery delegations, and decision makers.
             </p>
 
             <div className="sponsorship-meta-bar">
-              <div className="meta-pill">
-                <Calendar size={15} />
+              <span className="meta-item">
+                <Calendar size={14} className="meta-ico" />
                 <span>22, 23, 24 NOVEMBER 2026</span>
-              </div>
-              <div className="meta-pill">
-                <MapPin size={15} />
+              </span>
+              <span className="meta-divider">•</span>
+              <span className="meta-item">
+                <MapPin size={14} className="meta-ico" />
                 <span>B.M. Birla Auditorium, Jaipur</span>
-              </div>
+              </span>
             </div>
 
-            {/* ACTION BUTTONS */}
             <div className="sponsorship-actions-row">
               <a 
                 href="/jsa-sponsorship-catalog.pdf" 
                 download="JSA-Silver-Show-2026-Sponsorship-Catalog.pdf"
                 className="btn-download-catalogue"
               >
-                <Download size={18} />
+                <Download size={15} />
                 <span>Download Sponsorship Catalogue (PDF)</span>
                 <span className="file-size-badge">1.5 MB</span>
               </a>
@@ -228,7 +229,7 @@ export default function SponsorshipPage({ onGoToForm }) {
                 rel="noopener noreferrer"
                 className="btn-enquire-whatsapp"
               >
-                <Phone size={16} />
+                <Phone size={14} />
                 <span>Enquire: 92160 30976</span>
               </a>
             </div>

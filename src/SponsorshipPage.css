@@ -8,87 +8,92 @@
   min-height: 100vh;
 }
 
-/* 1. Hero Section */
+/* 1. Hero Section — Minimal Editorial */
 .sponsorship-hero {
-  padding: 3rem 0 3.5rem;
-  background: linear-gradient(180deg, rgba(248, 117, 170, 0.08) 0%, rgba(255, 255, 255, 0) 100%);
-  border-bottom: 1px solid rgba(20, 13, 22, 0.06);
+  padding: 4.5rem 0 3.75rem;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(20, 13, 22, 0.07);
 }
 
 .sponsorship-hero-content {
-  max-width: 860px;
+  max-width: 780px;
   margin: 0 auto;
   text-align: center;
 }
 
-.sponsorship-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
+.sponsorship-eyebrow {
+  display: block;
   font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--pink);
-  background: rgba(248, 117, 170, 0.1);
-  padding: 0.4rem 0.95rem;
-  border-radius: 9999px;
   margin-bottom: 1.25rem;
-  border: 1px solid rgba(248, 117, 170, 0.25);
 }
 
 .sponsorship-title {
-  font-size: clamp(2rem, 4vw, 3.25rem);
-  font-weight: 700;
+  font-size: clamp(2.3rem, 5vw, 3.6rem);
+  font-weight: 400;
   color: var(--text-primary);
-  line-height: 1.15;
-  margin-bottom: 1.2rem;
-  letter-spacing: -0.01em;
+  line-height: 1.12;
+  margin-bottom: 1.35rem;
+  letter-spacing: -0.02em;
 }
 
-.sponsorship-subtitle {
-  font-size: 1.08rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: 1.75rem;
-  max-width: 720px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.sponsorship-meta-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 2rem;
-}
-
-.meta-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  background: #ffffff;
-  padding: 0.5rem 1rem;
-  border-radius: 9999px;
-  border: 1px solid rgba(20, 13, 22, 0.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-}
-
-.meta-pill svg {
+.sponsorship-title em {
+  font-style: italic;
   color: var(--pink);
 }
 
-/* Actions */
+.sponsorship-subtitle {
+  font-size: 1.02rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin-bottom: 2rem;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: 400;
+}
+
+.sponsorship-meta-bar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  padding: 0.4rem 1.15rem;
+  background: #faf8f9;
+  border: 1px solid rgba(20, 13, 22, 0.08);
+  border-radius: 9999px;
+  margin-bottom: 2.25rem;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.04em;
+}
+
+.meta-ico {
+  color: var(--pink);
+}
+
+.meta-divider {
+  color: rgba(20, 13, 22, 0.25);
+  font-size: 0.8rem;
+}
+
+/* Actions — Sleek Minimal */
 .sponsorship-actions-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 0.85rem;
   flex-wrap: wrap;
 }
 
@@ -97,29 +102,30 @@
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  background: linear-gradient(135deg, #f875aa 0%, #e05b90 100%);
+  background: #140d16;
   color: #ffffff !important;
-  font-size: 0.92rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  padding: 0.85rem 1.75rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.75rem 1.6rem;
   border-radius: 9999px;
   text-decoration: none;
-  box-shadow: 0 6px 20px rgba(248, 117, 170, 0.35);
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #140d16;
+  box-shadow: 0 4px 14px rgba(20, 13, 22, 0.12);
+  transition: all 0.25s ease;
 }
 
 .btn-download-catalogue:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(248, 117, 170, 0.45);
-  background: linear-gradient(135deg, #e05b90 0%, #ca447b 100%);
+  background: var(--pink);
+  border-color: var(--pink);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(248, 117, 170, 0.35);
 }
 
 .file-size-badge {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.2);
   padding: 0.15rem 0.5rem;
   border-radius: 9999px;
   letter-spacing: 0.04em;
@@ -128,24 +134,23 @@
 .btn-enquire-whatsapp {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  background: #ffffff;
+  gap: 0.45rem;
+  background: transparent;
   color: var(--text-primary) !important;
-  font-size: 0.9rem;
+  font-size: 0.86rem;
   font-weight: 600;
-  padding: 0.85rem 1.5rem;
+  padding: 0.75rem 1.4rem;
   border-radius: 9999px;
-  border: 1px solid rgba(20, 13, 22, 0.12);
+  border: 1px solid rgba(20, 13, 22, 0.2);
   text-decoration: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  transition: all 0.25s ease;
 }
 
 .btn-enquire-whatsapp:hover {
-  transform: translateY(-2px);
   border-color: var(--pink);
   color: var(--pink) !important;
-  box-shadow: 0 6px 18px rgba(248, 117, 170, 0.15);
+  background: rgba(248, 117, 170, 0.05);
+  transform: translateY(-1px);
 }
 
 /* 2. Stats Strip */
