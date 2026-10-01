@@ -37,6 +37,7 @@ import {
 import './App.css';
 
 import ContactPage from './ContactPage';
+import SponsorshipPage from './SponsorshipPage';
 
 // Clean SVG Instagram Icon
 const InstagramIcon = ({ size = 18, className = "" }) => (
@@ -174,60 +175,59 @@ const SUPPORTING_ASSOCIATIONS = [
 ];
 
 const EXHIBITORS_LIST = [
-  "Aadiyogi Jewellers",
-  "Albeli jewellers",
-  "ARIES",
-  "balaji silver arts",
-  "Bhavy Sawariya Jewels",
-  "chandika pearls",
-  "CHHOTI BAI JEWELLERS",
-  "DBR GEMS",
-  "derewala gems and...",
-  "DIVINE JEWELS",
-  "divinity techno solutions",
-  "ELAUNT JEWELLRY",
-  "Fortune Charms Inc",
-  "gems india",
-  "gomes gems",
-  "GP SILVER",
-  "HINN THAR HASTSHILP",
-  "J P ENTERPRISES",
-  "jalash",
-  "Jawahar international",
-  "JIVA JEWELLERY",
-  "Kanak Gem & Jewelry",
-  "KARISH SILVER",
-  "KATTA'S GEMS & JEWELS",
-  "kay luxe",
-  "koshore motiwala",
-  "KRISHNAM JEWELLERS",
-  "LAAVI DHURV...",
-  "LASHKARI EXPORTS",
-  "lohiya's silver galleria p...",
-  "MAHAL JEWELS",
-  "Mahaveer Jewellery...",
-  "marvy jewels",
-  "MORCHANDRIKA...",
-  "My SILVERATI By MAGS...",
-  "New Photos",
-  "Nobel Gems and Jewels",
-  "PICHOLA PRIVATE...",
-  "Ratnavali Arts",
-  "RAVI JEWELLERS JAIPUR",
-  "riddhi jewel",
-  "Ridhi Siddhi Gem and...",
-  "RK Silver",
-  "SACHI DESIGN CREATION",
-  "shimla impex",
-  "SHREE DEREWALA...",
-  "SHREE GEMS &...",
-  "shree jaipur silver",
-  "silver source jewellery",
-  "sumanglam gold...",
-  "tarqash jewels",
-  "Tvasta 925 by Parth Silv...",
-  "twisha jewels",
-  "Vinayak Gem and..."
+  { name: "ARIES", logo: "/logopartners/ARIES/Aries (1).png" },
+  { name: "Aadiyogi Jewellers", logo: null },
+  { name: "Albeli jewellers", logo: "/logopartners/Albeli jewellers/WhatsApp Image 2026-09-18 at 14.58.12.jpeg" },
+  { name: "balaji silver arts", logo: "/logopartners/balaji silver arts/WhatsApp Image 2026-09-23 at 11.33.49 AM.jpeg" },
+  { name: "Bhavy Sawariya Jewels", logo: "/logopartners/Bhavy Sawariya Jewels/WhatsApp Image 2026-09-18 at 14.47.24.jpeg" },
+  { name: "chandika pearls", logo: "/logopartners/chandika pearls/WhatsApp Image 2026-09-23 at 1.34.14 PM (1).jpeg" },
+  { name: "CHHOTI BAI JEWELLERS", logo: "/logopartners/CHHOTI BAI JEWELLERS/CHHOTI BAI LOGO.png" },
+  { name: "DBR GEMS", logo: "/logopartners/DBR GEMS/1000019779.jpg.jpeg" },
+  { name: "derewala gems and jewellers", logo: null },
+  { name: "DIVINE JEWELS", logo: "/logopartners/DIVINE JEWELS/WhatsApp Image 2026-09-22 at 11.51.22.jpeg" },
+  { name: "divinity techno solutions", logo: null },
+  { name: "FLAUNT JEWELRY", logo: "/logopartners/FLAUNT JEWELRY/WhatsApp Image 2026-09-21 at 17.29.54.jpeg" },
+  { name: "Fortune Charms Inc", logo: "/logopartners/Fortune Charms Inc/FCI (1).png" },
+  { name: "gems india", logo: "/logopartners/gems india/WhatsApp Image 2026-09-23 at 3.14.18 PM.jpeg" },
+  { name: "gomes gems", logo: "/logopartners/gomes gems/2242cbc5-259a-4246-97d4-d36209cf3e53.png" },
+  { name: "GP SILVER", logo: "/logopartners/GP SILVER/GP Silvers Logo.png" },
+  { name: "HINN THAR HASTSHILP", logo: "/logopartners/HINN THAR HASTSHILP/WhatsApp Image 2026-09-23 at 3.03.40 PM (1).jpeg" },
+  { name: "J P ENTERPRISES", logo: "/logopartners/J P ENTERPRISES/Jashn Logo 3D.png" },
+  { name: "jalash", logo: "/logopartners/jalash/Jalash logo.png" },
+  { name: "Jawahar international", logo: "/logopartners/Jawahar international/WhatsApp Image 2026-09-18 at 12.41.41.jpeg" },
+  { name: "JIVA JEWELLERY", logo: "/logopartners/JIVA JEWELLERY/WhatsApp Image 2026-09-21 at 17.20.11.jpeg" },
+  { name: "Kanak Gem & Jewelry", logo: "/logopartners/Kanak Gem & Jewelry/WhatsApp Image 2026-09-18 at 18.01.33.jpeg" },
+  { name: "KAPISH SILVER", logo: "/logopartners/KAPISH SILVER/kj  final logo -01.png" },
+  { name: "KATTA'S GEMS & JEWELS", logo: "/logopartners/KATTA_S GEMS & JEWELS/Logo Final Jeweler (1).png" },
+  { name: "kay luxe", logo: null },
+  { name: "koshore motiwala", logo: "/logopartners/koshore motiwala/WhatsApp Image 2026-09-23 at 3.10.44 PM.jpeg" },
+  { name: "KRISHNAM JEWELLERS", logo: "/logopartners/KRISHNAM JEWELLERS/WhatsApp Image 2026-09-18 at 12.29.13 PM (14).jpeg" },
+  { name: "LAAVI DHURV CREATIONS", logo: "/logopartners/LAAVI DHURV CREATIONS/LDC GOLD logo.png" },
+  { name: "LASHKARI EXPORTS", logo: "/logopartners/LASHKARI EXPORTS/WhatsApp Image 2026-09-18 at 12.29.13 PM (19).jpeg" },
+  { name: "lohiya's silver galleria pvt ltd", logo: "/logopartners/lohiya_s silver galleria pvt ltd/WhatsApp Image 2026-09-23 at 4.09.08 PM.jpeg" },
+  { name: "MAHAL JEWELS", logo: "/logopartners/MAHAL JEWELS/461967710_1679860362796205_4586781853880899257_n.jpg" },
+  { name: "Mahaveer Jewellery House", logo: "/logopartners/Mahaveer Jewellery House/Logo 2 png.png" },
+  { name: "marvy jewels", logo: "/logopartners/marvy jewels/WhatsApp Image 2026-09-21 at 15.15.27.jpeg" },
+  { name: "MORCHANDRIKA HANDICRAFTS", logo: "/logopartners/MORCHANDRIKA HANDICRAFTS/WhatsApp Image 2026-09-18 at 11.44.21.jpeg" },
+  { name: "My SILVERATI By MAGS Gems", logo: "/logopartners/My SILVERATI By MAGS Gems/WhatsApp Image 2026-09-18 at 11.50.06.jpeg" },
+  { name: "Nobel Gems and Jewels", logo: "/logopartners/Nobel Gems and Jewels/NOBLE ab01 Final File Logo Variation one.png" },
+  { name: "PICHOLA PRIVATE LIMITED", logo: "/logopartners/PICHOLA PRIVATE LIMITED/Full Logo - Mauvepink.png" },
+  { name: "Ratnavali Arts", logo: "/logopartners/Ratnavali Arts/WhatsApp Image 2026-09-18 at 12.32.07.jpeg" },
+  { name: "RAVI JEWELLERS JAIPUR", logo: "/logopartners/RAVI JEWELLERS JAIPUR/Ravi Jewellers New.jpg.jpeg" },
+  { name: "riddhi jewel", logo: null },
+  { name: "Ridhi Siddhi Gem and Jewellery", logo: null },
+  { name: "RK Silver", logo: "/logopartners/RK Silver/Rk Silver Logo.png" },
+  { name: "SACHI DESIGN CREATION", logo: "/logopartners/SACHI DESIGN CREATION/Sachi Jaipur - NEW Logo.png" },
+  { name: "shimla impex", logo: "/logopartners/shimla impex/WhatsApp Image 2026-09-18 at 12.03.56.jpeg" },
+  { name: "SHREE DEREWALA JEWELLERS", logo: "/logopartners/SHREE DEREWALA JEWELLERS/WhatsApp Image 2026-09-18 at 12.29.13 PM (17).jpeg" },
+  { name: "SHREE GEMS & JEWELLERS", logo: "/logopartners/SHREE GEMS & JEWELLERS/WhatsApp Image 2026-09-18 at 12.29.13 PM (1).jpeg" },
+  { name: "shree jaipur silver", logo: "/logopartners/shree jaipur silver/WhatsApp Image 2026-09-23 at 1.25.55 PM (1).jpeg" },
+  { name: "silver source jewellery", logo: null },
+  { name: "sumanglam gold creations pvt ltd", logo: null },
+  { name: "tarqash jewels", logo: null },
+  { name: "Tvasta 925 by Parth Silver Art", logo: "/logopartners/Tvasta 925 by Parth Silver Art/Tvasta Logo.png" },
+  { name: "twisha jewels", logo: null },
+  { name: "Vinayak Gem and Jewellery", logo: null }
 ];
 
 const NEWS_EVENTS = [
@@ -278,6 +278,11 @@ export default function App() {
   };
 
   useEffect(() => {
+    // Scroll to top whenever page changes
+    window.scrollTo(0, 0);
+  }, [currentPage]);
+
+  useEffect(() => {
     // Check URL query / hash for contact routes or external form triggers
     const checkRoute = () => {
       const hash = window.location.hash.toLowerCase();
@@ -286,14 +291,15 @@ export default function App() {
         hash.includes('admin') ||
         path.includes('admin') ||
         hash.includes('register') ||
-        hash.includes('exhibitor') ||
-        hash.includes('visitor') ||
-        path.includes('register') ||
-        path.includes('visitor')
+        path.includes('register')
       ) {
         window.location.href = FORM_URL;
       } else if (hash === '#contact' || hash === '#/contact' || path.includes('contact')) {
         setCurrentPage('contact');
+      } else if (hash.includes('sponsor')) {
+        setCurrentPage('sponsorship');
+      } else if (hash.includes('news')) {
+        setCurrentPage('news-events');
       }
     };
 
@@ -374,13 +380,13 @@ export default function App() {
               className={`island-link ${currentPage === 'exhibitor-alerts' ? 'active' : ''}`}
               onClick={() => setCurrentPage('exhibitor-alerts')}
             >
-              Exhibitors
+              Exhibitor
             </button>
             <button 
               className={`island-link ${currentPage === 'visitor-alerts' ? 'active' : ''}`}
               onClick={() => setCurrentPage('visitor-alerts')}
             >
-              Visitors
+              Visitor
             </button>
             <button 
               className={`island-link ${currentPage === 'gallery' ? 'active' : ''}`}
@@ -389,10 +395,22 @@ export default function App() {
               Gallery
             </button>
             <button 
+              className={`island-link ${currentPage === 'news-events' ? 'active' : ''}`}
+              onClick={() => setCurrentPage('news-events')}
+            >
+              News &amp; Events
+            </button>
+            <button 
+              className={`island-link ${currentPage === 'sponsorship' ? 'active' : ''}`}
+              onClick={() => setCurrentPage('sponsorship')}
+            >
+              Sponsorship Opportunities
+            </button>
+            <button 
               className={`island-link ${currentPage === 'contact' ? 'active' : ''}`}
               onClick={() => setCurrentPage('contact')}
             >
-              Contact
+              Contact Us
             </button>
           </nav>
 
@@ -431,10 +449,12 @@ export default function App() {
             </div>
             <div className="drawer-links">
               <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); }} className={currentPage === 'home' ? 'active' : ''}>Home</button>
-              <button onClick={() => { setCurrentPage('about'); setMobileMenuOpen(false); }} className={currentPage === 'about' ? 'active' : ''}>About Us</button>
-              <button onClick={() => { setCurrentPage('exhibitor-alerts'); setMobileMenuOpen(false); }} className={currentPage === 'exhibitor-alerts' ? 'active' : ''}>For Exhibitors</button>
-              <button onClick={() => { setCurrentPage('visitor-alerts'); setMobileMenuOpen(false); }} className={currentPage === 'visitor-alerts' ? 'active' : ''}>For Visitors</button>
+              <button onClick={() => { setCurrentPage('about'); setMobileMenuOpen(false); }} className={currentPage === 'about' ? 'active' : ''}>About</button>
+              <button onClick={() => { setCurrentPage('exhibitor-alerts'); setMobileMenuOpen(false); }} className={currentPage === 'exhibitor-alerts' ? 'active' : ''}>Exhibitor</button>
+              <button onClick={() => { setCurrentPage('visitor-alerts'); setMobileMenuOpen(false); }} className={currentPage === 'visitor-alerts' ? 'active' : ''}>Visitor</button>
               <button onClick={() => { setCurrentPage('gallery'); setMobileMenuOpen(false); }} className={currentPage === 'gallery' ? 'active' : ''}>Gallery</button>
+              <button onClick={() => { setCurrentPage('news-events'); setMobileMenuOpen(false); }} className={currentPage === 'news-events' ? 'active' : ''}>News &amp; Events</button>
+              <button onClick={() => { setCurrentPage('sponsorship'); setMobileMenuOpen(false); }} className={currentPage === 'sponsorship' ? 'active' : ''}>Sponsorship Opportunities</button>
               <button onClick={() => { setCurrentPage('contact'); setMobileMenuOpen(false); }} className={currentPage === 'contact' ? 'active' : ''}>Contact Us</button>
             </div>
             <div className="drawer-cta-stack">
@@ -767,14 +787,31 @@ export default function App() {
                   ref={exhibitorsScrollRef}
                   className="horizontal-cards-scroller exhibitors-scroller"
                 >
-                  {EXHIBITORS_LIST.map((name, idx) => (
+                  {EXHIBITORS_LIST.map((item, idx) => (
                     <div key={idx} className="exhibitor-badge-card">
-                      <div className="exhibitor-badge-index">#{String(idx + 1).padStart(2, '0')}</div>
-                      <div className="exhibitor-crest-icon">
-                        <Gem size={18} />
-                      </div>
-                      <h4 className="exhibitor-company-name">{name}</h4>
-                      <span className="exhibitor-status-pill">Registered Exhibitor</span>
+                      {item.logo ? (
+                        <div className="exhibitor-logo-box">
+                          <img 
+                            src={encodeURI(item.logo)} 
+                            alt={`${item.name} logo`}
+                            className="exhibitor-logo-img" 
+                            loading="lazy"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                              const fallback = e.currentTarget.parentElement?.querySelector('.exhibitor-fallback-icon');
+                              if (fallback) fallback.style.display = 'flex';
+                            }}
+                          />
+                          <div className="exhibitor-crest-icon exhibitor-fallback-icon" style={{ display: 'none' }}>
+                            <Gem size={20} />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="exhibitor-crest-icon placeholder-crest">
+                          <Gem size={20} />
+                        </div>
+                      )}
+                      <h4 className="exhibitor-company-name">{item.name}</h4>
                     </div>
                   ))}
                 </div>
@@ -930,148 +967,7 @@ export default function App() {
             </div>
           </section>
 
-          {/* OUR PARTNERS SECTION (CONTINUOUS RIGHT-TO-LEFT LOOP) */}
-          <section className="section-space partners-section border-top-clean border-bottom-clean">
-            <div className="container">
-              <RevealSection>
-                <div className="section-head">
-                  <h2 className="section-title font-serif">Our Partners</h2>
-                  <p className="section-lead">Collaborating with industry pioneers, bullion refiners, hallmark centers, and master artisan guilds.</p>
-                </div>
-              </RevealSection>
-            </div>
 
-            {/* Continuous Marquee (Right to Left) */}
-            <div className="partners-marquee-container">
-              <div className="partners-marquee-track">
-                {/* 1st Loop Group */}
-                <div className="partners-marquee-group">
-                  <div className="partner-capsule-card">
-                    <div className="partner-emblem-box">
-                      <ShieldCheck size={26} className="partner-emblem-ico" />
-                    </div>
-                    <div className="partner-info">
-                      <span className="partner-name font-serif">Jaipur Bullion Refinery</span>
-                      <span className="partner-meta">Certified 999 Purity Partner</span>
-                    </div>
-                  </div>
-
-                  <div className="partner-capsule-card">
-                    <div className="partner-emblem-box">
-                      <Award size={26} className="partner-emblem-ico" />
-                    </div>
-                    <div className="partner-info">
-                      <span className="partner-name font-serif">Royal Filigree Guild</span>
-                      <span className="partner-meta">Heritage Silversmiths Alliance</span>
-                    </div>
-                  </div>
-
-                  <div className="partner-capsule-card">
-                    <div className="partner-emblem-box">
-                      <Layers size={26} className="partner-emblem-ico" />
-                    </div>
-                    <div className="partner-info">
-                      <span className="partner-name font-serif">India Hallmarking Board</span>
-                      <span className="partner-meta">Quality & Standards Partner</span>
-                    </div>
-                  </div>
-
-                  <div className="partner-capsule-card">
-                    <div className="partner-emblem-box">
-                      <Sparkles size={26} className="partner-emblem-ico" />
-                    </div>
-                    <div className="partner-info">
-                      <span className="partner-name font-serif">Sterling Export Corridor</span>
-                      <span className="partner-meta">Global Trade Facilitator</span>
-                    </div>
-                  </div>
-
-                  <div className="partner-capsule-card">
-                    <div className="partner-emblem-box">
-                      <Coins size={26} className="partner-emblem-ico" />
-                    </div>
-                    <div className="partner-info">
-                      <span className="partner-name font-serif">Apex Silver Artisans</span>
-                      <span className="partner-meta">Master Crafts Collective</span>
-                    </div>
-                  </div>
-
-                  <div className="partner-capsule-card">
-                    <div className="partner-emblem-box">
-                      <Building size={26} className="partner-emblem-ico" />
-                    </div>
-                    <div className="partner-info">
-                      <span className="partner-name font-serif">Rajasthan Trade Chamber</span>
-                      <span className="partner-meta">Official Industry Patron</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 2nd Loop Group (Identical clone for seamless infinite loop) */}
-                <div className="partners-marquee-group" aria-hidden="true">
-                  <div className="partner-capsule-card">
-                    <div className="partner-emblem-box">
-                      <ShieldCheck size={26} className="partner-emblem-ico" />
-                    </div>
-                    <div className="partner-info">
-                      <span className="partner-name font-serif">Jaipur Bullion Refinery</span>
-                      <span className="partner-meta">Certified 999 Purity Partner</span>
-                    </div>
-                  </div>
-
-                  <div className="partner-capsule-card">
-                    <div className="partner-emblem-box">
-                      <Award size={26} className="partner-emblem-ico" />
-                    </div>
-                    <div className="partner-info">
-                      <span className="partner-name font-serif">Royal Filigree Guild</span>
-                      <span className="partner-meta">Heritage Silversmiths Alliance</span>
-                    </div>
-                  </div>
-
-                  <div className="partner-capsule-card">
-                    <div className="partner-emblem-box">
-                      <Layers size={26} className="partner-emblem-ico" />
-                    </div>
-                    <div className="partner-info">
-                      <span className="partner-name font-serif">India Hallmarking Board</span>
-                      <span className="partner-meta">Quality & Standards Partner</span>
-                    </div>
-                  </div>
-
-                  <div className="partner-capsule-card">
-                    <div className="partner-emblem-box">
-                      <Sparkles size={26} className="partner-emblem-ico" />
-                    </div>
-                    <div className="partner-info">
-                      <span className="partner-name font-serif">Sterling Export Corridor</span>
-                      <span className="partner-meta">Global Trade Facilitator</span>
-                    </div>
-                  </div>
-
-                  <div className="partner-capsule-card">
-                    <div className="partner-emblem-box">
-                      <Coins size={26} className="partner-emblem-ico" />
-                    </div>
-                    <div className="partner-info">
-                      <span className="partner-name font-serif">Apex Silver Artisans</span>
-                      <span className="partner-meta">Master Crafts Collective</span>
-                    </div>
-                  </div>
-
-                  <div className="partner-capsule-card">
-                    <div className="partner-emblem-box">
-                      <Building size={26} className="partner-emblem-ico" />
-                    </div>
-                    <div className="partner-info">
-                      <span className="partner-name font-serif">Rajasthan Trade Chamber</span>
-                      <span className="partner-meta">Official Industry Patron</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
 
           {/* NEWS & EVENTS SECTION (3 RECTANGLE CARDS IN SINGLE HORIZONTAL ROW / MOBILE SCROLLABLE) */}
           <section className="section-space news-events-section bg-tint border-top-clean border-bottom-clean">
@@ -1846,6 +1742,62 @@ export default function App() {
         </main>
       )}
 
+      {/* ========================================================
+          PAGE 7: NEWS & EVENTS (DEDICATED FULL VIEW)
+          ======================================================== */}
+      {currentPage === 'news-events' && (
+        <main className="page-content news-events-page-root animate-fade-in" style={{ paddingTop: '6.5rem', minHeight: '80vh' }}>
+          <section className="section-space">
+            <div className="container">
+              <RevealSection>
+                <div className="section-head text-center">
+                  <span className="section-kicker">OFFICIAL PRESS DESK • JSA SILVER SHOW 2026</span>
+                  <h1 className="section-title font-serif">News &amp; Events</h1>
+                  <p className="section-lead max-w-2xl mx-auto">
+                    Stay informed with the latest announcements, media releases, and milestones from JSA Silver Show 2026.
+                  </p>
+                </div>
+              </RevealSection>
+
+              <div className="news-cards-row" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem', marginTop: '2.5rem' }}>
+                {NEWS_EVENTS.map((item, idx) => (
+                  <div key={idx} className="news-rectangle-card">
+                    <div className="news-card-image-wrap">
+                      <img 
+                        src={item.image} 
+                        alt={item.title} 
+                        className="news-card-image"
+                        loading="lazy" 
+                      />
+                      <span className="news-tag-badge overlay">{item.tag}</span>
+                    </div>
+                    <div className="news-card-body">
+                      <div className="news-card-meta">
+                        <Calendar size={13} />
+                        <span>{item.date}</span>
+                      </div>
+                      <h3 className="news-card-title font-serif">{item.title}</h3>
+                      <p className="news-card-desc">{item.desc}</p>
+                      <button onClick={goToForm} className="news-card-link-btn">
+                        <span>Read Full Release</span>
+                        <ArrowRight size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </main>
+      )}
+
+      {/* ========================================================
+          PAGE 8: SPONSORSHIP OPPORTUNITIES
+          ======================================================== */}
+      {currentPage === 'sponsorship' && (
+        <SponsorshipPage onGoToForm={goToForm} />
+      )}
+
       {/* HIGH-AESTHETIC REGISTRATION CTA BANNER */}
       <section className="registration-cta-banner">
         <div className="container">
@@ -1922,7 +1874,7 @@ export default function App() {
               <ul className="f-links">
                 <li><button onClick={goToForm}>Visitor Pass Registration</button></li>
                 <li><button onClick={goToForm}>Exhibitor Intent Form</button></li>
-                <li><button onClick={goToForm}>Booths & Floor Plan</button></li>
+                <li><button onClick={() => setCurrentPage('sponsorship')}>Sponsorship Opportunities</button></li>
                 <li><button onClick={() => setCurrentPage('gallery')}>Exhibition Gallery</button></li>
               </ul>
             </div>
@@ -1934,6 +1886,7 @@ export default function App() {
                 <li><button onClick={() => setCurrentPage('about')}>About JSA Silver Show</button></li>
                 <li><button onClick={() => setCurrentPage('exhibitor-alerts')}>Exhibitor Alerts</button></li>
                 <li><button onClick={() => setCurrentPage('visitor-alerts')}>Visitor Alerts</button></li>
+                <li><button onClick={() => setCurrentPage('news-events')}>News &amp; Events</button></li>
                 <li><button onClick={() => setCurrentPage('contact')}>Contact Us Helpdesk</button></li>
                 <li><a href="https://jsasilvershow.com/" target="_blank" rel="noopener noreferrer">Live Bullion Benchmark</a></li>
               </ul>
