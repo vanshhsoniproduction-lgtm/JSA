@@ -9,6 +9,8 @@
   /* ─── Typography ─── */
   --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-display: 'DM Serif Display', Georgia, serif;
+  --font-luxury: 'Playfair Display', 'DM Serif Display', Georgia, serif;
+  --font-cinzel: 'Cinzel', serif;
 
   /* ─── Strict Color Palette ─── */
   --pink:       #F875AA;
@@ -88,6 +90,10 @@ body {
 
 .font-serif {
   font-family: var(--font-display);
+}
+
+.font-luxury {
+  font-family: var(--font-luxury);
 }
 
 .text-accent {

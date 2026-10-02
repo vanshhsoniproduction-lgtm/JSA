@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import {
   MapPin,
   ArrowRight,
@@ -32,6 +32,7 @@ import {
   Lock,
   Coffee,
   Car,
+  Plane,
   CheckCircle2
 } from 'lucide-react';
 import './App.css';
@@ -89,10 +90,10 @@ function RevealSection({ children, className = "", delay = "" }) {
   );
 }
 
-// Animated Synchronized Counter Component
+// Animated Synchronized Counter Component (Zero-re-render high-performance DOM update)
 function CounterNumber({ endValue, duration = 2000, suffix = "+", suffixClassName = "" }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
+  const spanRef = useRef(null);
+  const containerRef = useRef(null);
   const hasAnimated = useRef(false);
 
   useEffect(() => {
@@ -106,35 +107,40 @@ function CounterNumber({ endValue, duration = 2000, suffix = "+", suffixClassNam
           const step = (currentTime) => {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            // Ease out cubic
+            // Smooth ease out cubic curve
             const easeProgress = 1 - Math.pow(1 - progress, 3);
             const currentVal = Math.floor(easeProgress * target);
-            setCount(currentVal);
+
+            if (spanRef.current) {
+              spanRef.current.textContent = currentVal.toLocaleString('en-IN');
+            }
 
             if (progress < 1) {
               requestAnimationFrame(step);
             } else {
-              setCount(target);
+              if (spanRef.current) {
+                spanRef.current.textContent = target.toLocaleString('en-IN');
+              }
             }
           };
 
           requestAnimationFrame(step);
         }
       },
-      { threshold: 0.2 }
+      { threshold: 0.15 }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
     }
     return () => {
-      if (ref.current) observer.unobserve(ref.current);
+      if (containerRef.current) observer.unobserve(containerRef.current);
     };
   }, [endValue, duration]);
 
   return (
-    <span ref={ref} className="counter-digit">
-      {count.toLocaleString('en-IN')}
+    <span ref={containerRef} className="counter-digit">
+      <span ref={spanRef}>0</span>
       {suffix && (
         <span className={`counter-suffix ${suffixClassName}`.trim()}>
           {suffix}
@@ -145,33 +151,78 @@ function CounterNumber({ endValue, duration = 2000, suffix = "+", suffixClassNam
 }
 
 const SUPPORTING_ASSOCIATIONS = [
+  { name: 'SH. KAILASH MITTAL', role: 'PRESIDENT, SARAFA TRADERS COMMITTEE, JAIPUR' },
+  { name: 'SH. KASHMIR SINGH RAJPUT', role: 'NATIONAL PRESIDENT, AKHIL BHARTIYA SWARNKAR SANGH' },
+  { name: 'SH. DULI CHAND KAREL', role: 'CHAIRMAN, BHARTIYA SWARNKAR SANGH' },
+  { name: 'SH. LALIT SONI', role: 'PRESIDENT, GEMS AND JEWELLERY HANDICRAFT SWARNKAR SANGH' },
+  { name: 'SH. RAJESH TEJPAL RATHOD', role: 'PRESIDENT, KOLHAPUR SARAF VYAPARI SANGH' },
+  { name: 'SH. NITESH AGARWAL', role: 'PRESIDENT, AGRA SARAFA ASSOCIATION' },
+  { name: 'SH. NARESH BALANI', role: 'CHAIRMAN, JMAIIE' },
+  { name: 'SH. RAJIV SHAHDEV', role: 'PRESIDENT, CHANDIGARH JEWELLERS ASSOCIATION' },
+  { name: 'SH. JAIN SAMPATLAL KHABYA', role: 'PRESIDENT, DAGINA ASSOCIATION, AHMEDABAD' },
+  { name: 'SH. RAM AVTAR VERMA', role: 'CHAIRMAN, TBJA DELHI' },
+  { name: 'SH. MAYANK KAPOOR', role: 'PRESIDENT, JAMMU JEWELLER ASSOCIATION' },
+  { name: 'SH. RAJKUMAR AGARWAL', role: 'PRESIDENT, BAREILLY SARAFA ASSOCIATION' },
+  { name: 'SH. ANAND SONI', role: 'PRESIDENT, BHOPAL SARAFA ASSOCIATION' },
+  { name: 'SH. VARUN SURAJ CHAUHAN', role: 'PRESIDENT, CHANDIGARH SARAFA ASSOCIATION' },
+  { name: 'SH. YASHWANT ANCHLIYA', role: 'PRESIDENT, SARAFA ASSOCIATION UDAIPUR' },
+  { name: 'SH. PV JOSE', role: 'CHIEF PATRON, JEWELLERY MANUFACTURERS ASSOCIATION, KERALA' },
+  { name: 'SH. ANAND RATHI', role: 'CHIEF PATRON, SARAFA COMMITTEE, KOTA' },
+  { name: 'SH. ANIL SINGHAL', role: 'PRESIDENT, NORTH DELHI JEWELLERS ASSOCIATION' },
+  { name: 'SH. MOJI NUVAL', role: 'PRESIDENT, SHRI SARAFA SANSTHAN BUNDI' },
+  { name: 'SH. RAVI SHANKAR GAURI', role: 'PRESIDENT, GOLD MERCHANT ASSOCIATION SATNA' },
   { name: 'SH. RAJESH ROKDE', role: 'CHAIRMAN, GJC' },
   { name: 'SH. AVINASH GUPTA', role: 'VICE CHAIRMAN, GJC' },
   { name: 'SH. RAJU MANGODIWALA', role: 'PRESIDENT, JEWELLERS ASSOCIATION JAIPUR' },
-  { name: 'SH. KAILASH MITTAL', role: 'PRESIDENT, SARAFA TRADERS COMMITTEE, JAIPUR' },
-  { name: 'SH. DULI CHAND KAREL', role: 'CHAIRMAN, BHARTIYA SWARNKAR SANGH' },
-  { name: 'SH. KASHMIR SINGH RAJPUT', role: 'NATIONAL PRESIDENT, AKHIL BHARTIYA SWARNKAR SANGH' },
   { name: 'SH. JAYANTILAL CHALLANI', role: 'PRESIDENT, JEWELLERS AND DIAMOND ASSOCIATION MADRAS' },
-  { name: 'SH. PV JOSE', role: 'CHIEF PATRON, JEWELLERY MANUFACTURERS ASSOCIATION, KERALA' },
-  { name: 'SH. NITESH AGARWAL', role: 'PRESIDENT, AGRA SARAFA ASSOCIATION' },
-  { name: 'SH. RAJESH TEJPAL RATHOD', role: 'PRESIDENT, KOLHAPUR SARAF VYAPARI SANGH' },
-  { name: 'SH. SURYA PRAKASH GUPTA', role: 'PRESIDENT, BADAUN SARAFA ASSOCIATION' },
-  { name: 'SH. RAM AVTAR VERMA', role: 'CHAIRMAN, TBJA DELHI' },
-  { name: 'SH. ANIL SINGHAL', role: 'PRESIDENT, NORTH DELHI JEWELLERS ASSOCIATION' },
-  { name: 'SH. RAJIV SHAHDEV', role: 'PRESIDENT, CHANDIGARH JEWELLERS ASSOCIATION' },
-  { name: 'SH. VARUN SURAJ CHAUHAN', role: 'PRESIDENT, CHANDIGARH SARAFA ASSOCIATION' },
   { name: 'SH. MANISH KUMAR VERMA', role: 'PRESIDENT, LUCKNOW MAHANAGAR SARAFA ASSOCIATION' },
-  { name: 'SH. BASHIR ALI', role: 'PRESIDENT, ALL KASHMIR GOLD DEALERS ASSOCIATION' },
-  { name: 'SH. MAYANK KAPOOR', role: 'PRESIDENT, JAMMU JEWELLER ASSOCIATION' },
-  { name: 'SH. RAJKUMAR AGARWAL', role: 'PRESIDENT, BAREILLY SARAFA ASSOCIATION' },
-  { name: 'SH. ANAND RATHI', role: 'CHIEF PATRON, SARAFA COMMITTEE, KOTA' },
-  { name: 'SH. MOJI NUVAL', role: 'PRESIDENT, SHRI SARAFA SANSTHAN BUNDI' },
-  { name: 'SH. YASHWANT ANCHLIYA', role: 'PRESIDENT, SARAFA ASSOCIATION UDAIPUR' },
-  { name: 'SH. LALIT SONI', role: 'PRESIDENT, GEMS AND JEWELLERY HANDICRAFT SWARNKAR SANGH' },
-  { name: 'SH. JAIN SAMPATLAL KHABYA', role: 'PRESIDENT, DAGINA ASSOCIATION, AHMEDABAD' },
-  { name: 'SH. RAVI SHANKAR GAURI', role: 'PRESIDENT, GOLD MERCHANT ASSOCIATION SATNA' },
-  { name: 'SH. ANAND SONI', role: 'PRESIDENT, BHOPAL SARAFA ASSOCIATION' },
-  { name: 'SH. NARESH BALANI', role: 'CHAIRMAN, JMAIIE' }
+  { name: 'SH. SURYA PRAKASH GUPTA', role: 'PRESIDENT, BADAUN SARAFA ASSOCIATION' },
+  { name: 'SH. BASHIR ALI', role: 'PRESIDENT, ALL KASHMIR GOLD DEALERS ASSOCIATION' }
+];
+
+const ADVISORY_MEMBERS = [
+  { name: 'Sh. Ashok Maheshwari', role: 'Advisory Member', img: '/Photos/Advisory%20Committee/SH.%20ASHOK%20MAHESHWARI.png' },
+  { name: 'Sh. Raju Mangodiwala', role: 'Advisory Member', img: '/Photos/Advisory%20Committee/SH%20RAJU%20MANGODIWALA.png' },
+  { name: 'Sh. Ankit Vaidya', role: 'Advisory Member', img: '/Photos/Advisory%20Committee/SH.%20ANKIT%20VAIDYA.png' },
+  { name: 'Sh. Arpit Kala', role: 'Advisory Member', img: '/Photos/Advisory%20Committee/SH.%20ARPIT%20KALA.png' },
+  { name: 'Sh. Manish Khunteta', role: 'Advisory Member', img: '/Photos/Advisory%20Committee/SH.%20MANISH%20KHUNTETA.png' },
+  { name: 'Sh. Apoorv Nawalkha', role: 'Advisory Member', img: '/Photos/Advisory%20Committee/SH.%20APOORV%20NAWALKHA.png' },
+  { name: 'Sh. Snehdeep Khyaliya', role: 'Criminal Advocate', img: '/Photos/Advisory%20Committee/SH.%20SNEHDEEP%20KHHALIYA.png' },
+  { name: 'Sh. Prateek Singh', role: 'Civil Advocate', img: '/Photos/Advisory%20Committee/SH.%20PRATEEK%20SINGH.png' },
+  { name: 'Sh. Sachin Kumar Gupta', role: 'Advisory Member', img: '/Photos/Advisory%20Committee/SH.%20SACHIN%20KUMAR%20GUPTA.png' }
+];
+
+const BOARD_OF_TRUSTEES = [
+  { name: 'Ujjwal Derewala', role: 'Chairman', quote: 'With a focus on growth and global reach, JSA Silver Show stands as a key initiative for the silver industry.', img: '/Photos/Board%20of%20Trustees/Ujjawal%20Derewala.png' },
+  { name: 'Abhineet Boochra', role: 'Vice Chairman', quote: 'JSA Silver Show reflects the strength and legacy of our silver industry. We are committed to an exceptional experience.', img: '/Photos/Board%20of%20Trustees/SH.%20ABHINEET%20BHUCHRA.png' },
+  { name: 'Abhishek Bansal', role: 'Vice Chairman', quote: 'This initiative reflects our collective effort to elevate the silver industry to new heights.', img: '/Photos/Board%20of%20Trustees/SH.%20ABHISHEK%20BANSAL.png' },
+  { name: 'Rahul Jain', role: 'Hony. Secretary', quote: "Being part of JSA Silver Show is more than participation — it's about shaping the future of trade.", img: '/Photos/Board%20of%20Trustees/SH.%20RAHUL%20JAIN.png' },
+  { name: 'Deepesh Goyal', role: 'Treasurer', quote: 'With a focus on transparency and efficiency, we ensure smooth operations of the show.', img: '/Photos/Board%20of%20Trustees/SH.%20DEEPESH%20GOYAL.png' },
+  { name: 'Karan Boochra', role: 'Digital & Innovation Secretary', quote: 'Through digital innovation, we are creating a modern and seamless show experience.', img: '/Photos/Board%20of%20Trustees/SH.%20KARAN%20BOOCHRA.png' },
+  { name: 'Manan Sogani', role: 'Joint Secretary', quote: 'We are dedicated to coordinating efforts and delivering a smooth experience for all.', img: '/Photos/Board%20of%20Trustees/SH.%20MANAN%20SOGANI.png' },
+  { name: 'Nishant Vijayvargia', role: 'Joint Treasurer', quote: 'We ensure proper planning and financial discipline to support the success of the show.', img: '/Photos/Board%20of%20Trustees/SH.%20NISHANT%20VIJAYRAGHI.png' },
+  { name: 'Shubham Agarwal', role: 'Union Secretary', quote: 'We strive to unite the industry and create a strong platform for collaboration.', img: '/Photos/Board%20of%20Trustees/SH.%20SHUBHAM%20AGARWAL.png' },
+  { name: 'Kushal Khunteta', role: 'Union Secretary', quote: 'Our aim is to strengthen industry relations and encourage growth through this platform.', img: '/Photos/Board%20of%20Trustees/SH.%20KUSHAL%20KHUNTETA.png' }
+];
+
+const SHOW_COMMITTEE = [
+  { name: 'Sh. Amit Maheshwari', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20AMIT%20MAHESHWARI.png' },
+  { name: 'Sh. Ashish Khandelwal', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20ASHISH%20KHANDELWAL.png' },
+  { name: 'Sh. Rambabu Natani', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20RAMBABU%20NATANI.png' },
+  { name: 'Sh. Anshul Soni', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20ANSHUL%20SONI.png' },
+  { name: 'Sh. Alok Katta', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20ALOK%20KATTA.png' },
+  { name: 'Sh. Neeraj Jain', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20NEERAJ%20JAIN.png' },
+  { name: 'Sh. Vipin Gupta', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20VIPIN%20GUPTA.png' },
+  { name: 'Sh. Ramanuj Saraf', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20RAMANUJ%20SARAF.png' },
+  { name: 'Sh. Tribhuvan Agarwal', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20TRIBHUVAN%20AGARWAL.png' },
+  { name: 'Sh. Vikash Soni', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20VIKASH%20SONI.png' },
+  { name: 'Sh. Abhishek Shah', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20ABHISHEK%20SHAH.png' },
+  { name: 'Sh. Dinesh Kothari', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20DINESH%20KOTHARI.png' },
+  { name: 'Sh. Kiran Bhai', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20KIRAN%20BHAI.png' },
+  { name: 'Sh. Manish Bhindi', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20MANISH%20BHINDI.png' },
+  { name: 'Sh. Shailesh Jayesh', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20SHAILESH%20JAYESH.png' },
+  { name: 'Sh. Vipin Tambi', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20VIPIN%20TAMBI.png' },
+  { name: 'Sh. Yashu Kapoor', role: 'Show Committee', img: '/Photos/Show%20Committee/SH.%20YASHU%20KAPOOR.png' }
 ];
 
 const EXHIBITORS_LIST = [
@@ -254,12 +305,63 @@ const NEWS_EVENTS = [
   }
 ];
 
+const NAV_ITEMS = [
+  { id: 'home', label: 'Home' },
+  { id: 'about', label: 'About' },
+  { id: 'exhibitor-alerts', label: 'Exhibitor' },
+  { id: 'visitor-alerts', label: 'Visitor' },
+  { id: 'gallery', label: 'Gallery' },
+  { id: 'news-events', label: 'News & Events' },
+  { id: 'sponsorship', label: 'Sponsorship' },
+  { id: 'contact', label: 'Contact' },
+];
+
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [galleryFilter, setGalleryFilter] = useState('all');
   const [scrolled, setScrolled] = useState(false);
+
+  // Travelling Bouncy Capsule Glider state & refs
+  const navLinksRef = useRef(null);
+  const navBtnRefs = useRef({});
+  const [gliderStyle, setGliderStyle] = useState({ left: 0, top: 0, width: 0, height: 0, opacity: 0 });
+  const [isBouncing, setIsBouncing] = useState(false);
+  const [hasGliderInitialized, setHasGliderInitialized] = useState(false);
+
+  useLayoutEffect(() => {
+    const updateGlider = (triggerBounce = true) => {
+      const activeEl = navBtnRefs.current[currentPage];
+      const containerEl = navLinksRef.current;
+      if (activeEl && containerEl) {
+        setGliderStyle({
+          left: activeEl.offsetLeft,
+          top: activeEl.offsetTop,
+          width: activeEl.offsetWidth,
+          height: activeEl.offsetHeight,
+          opacity: 1,
+        });
+        if (triggerBounce) {
+          setIsBouncing(false);
+          requestAnimationFrame(() => {
+            setIsBouncing(true);
+          });
+        }
+      }
+    };
+
+    if (!hasGliderInitialized) {
+      updateGlider(false);
+      setHasGliderInitialized(true);
+    } else {
+      updateGlider(true);
+    }
+
+    const handleResize = () => updateGlider(false);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [currentPage, hasGliderInitialized]);
 
   const assocScrollRef = useRef(null);
   const exhibitorsScrollRef = useRef(null);
@@ -309,12 +411,13 @@ export default function App() {
   }, []);
 
   const heroCarouselImages = [
-    "https://jsasilvershow.com/images/crousel/1.jpg",
-    "https://jsasilvershow.com/images/crousel/2.jpg",
-    "https://jsasilvershow.com/images/crousel/3.jpg",
-    "https://jsasilvershow.com/images/crousel/4.jpg",
-    "https://jsasilvershow.com/images/crousel/5.jpg",
-    "https://jsasilvershow.com/images/crousel/6.jpg"
+    "/hero/w1.jpeg",
+    "/hero/w2.jpeg",
+    "/hero/w6.jpg",
+    "/hero/WhatsApp Image 2026-09-30 at 11.10.20.jpeg",
+    "/hero/WhatsApp Image 2026-09-30 at 11.10.20 (1).jpeg",
+    "/hero/WhatsApp Image 2026-09-30 at 11.10.20 (2).jpeg",
+    "/hero/WhatsApp Image 2026-09-30 at 11.11.33.jpeg"
   ];
 
   useEffect(() => {
@@ -345,125 +448,96 @@ export default function App() {
     <div className="app-root">
       {/* UNIQUE FLOATING CAPSULE ISLAND NAVBAR */}
       <div className={`floating-nav-wrapper ${scrolled ? 'is-scrolled' : ''}`}>
-        <header className="island-navbar">
-          {/* Brand Logo & Name */}
-          <div 
-            className="island-brand" 
-            onClick={() => setCurrentPage('home')} 
-            role="button" 
-            tabIndex={0}
-          >
-            <img src="/jsa-show-logo.jpg" alt="JSA Logo" className="island-logo" />
-            <div className="island-brand-titles">
-              <span className="island-title font-serif">JSA Silver Show</span>
-              <span className="island-subtitle">JAIPUR 2026</span>
+        <header className={`island-navbar ${mobileMenuOpen ? 'is-expanded' : ''}`}>
+          <div className="island-nav-top-row">
+            {/* Brand Logo & Name */}
+            <div 
+              className="island-brand" 
+              onClick={() => {
+                setCurrentPage('home');
+                setMobileMenuOpen(false);
+              }} 
+              role="button" 
+              tabIndex={0}
+            >
+              <img src="/jsa-show-logo.jpg" alt="JSA Logo" className="island-logo" />
+              <div className="island-brand-titles">
+                <span className="island-title font-luxury">JSA Silver Show</span>
+              </div>
+            </div>
+
+            {/* Center Links Segmented Control with Bouncy Traveling Glider */}
+            <nav className="island-nav-links" ref={navLinksRef}>
+              {/* Travelling Active Capsule */}
+              <div 
+                className={`nav-capsule-glider ${isBouncing ? 'is-bouncing' : ''} ${!hasGliderInitialized ? 'no-transition' : ''}`}
+                style={{
+                  left: `${gliderStyle.left}px`,
+                  top: `${gliderStyle.top}px`,
+                  width: `${gliderStyle.width}px`,
+                  height: `${gliderStyle.height}px`,
+                  opacity: gliderStyle.opacity,
+                }}
+                aria-hidden="true"
+              >
+                <div className="nav-capsule-pill" />
+              </div>
+
+              {NAV_ITEMS.map((item) => (
+                <button 
+                  key={item.id}
+                  ref={(el) => { navBtnRefs.current[item.id] = el; }}
+                  className={`island-link ${currentPage === item.id ? 'active' : ''}`}
+                  onClick={() => setCurrentPage(item.id)}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+
+            {/* Mobile Toggle */}
+            <div className="island-right">
+              <button 
+                className={`island-mobile-toggle ${mobileMenuOpen ? 'is-active' : ''}`}
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+              >
+                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
             </div>
           </div>
 
-          <div className="island-divider"></div>
-
-          {/* Center Links Segmented Control */}
-          <nav className="island-nav-links">
-            <button 
-              className={`island-link ${currentPage === 'home' ? 'active' : ''}`}
-              onClick={() => setCurrentPage('home')}
-            >
-              Home
-            </button>
-            <button 
-              className={`island-link ${currentPage === 'about' ? 'active' : ''}`}
-              onClick={() => setCurrentPage('about')}
-            >
-              About
-            </button>
-            <button 
-              className={`island-link ${currentPage === 'exhibitor-alerts' ? 'active' : ''}`}
-              onClick={() => setCurrentPage('exhibitor-alerts')}
-            >
-              Exhibitor
-            </button>
-            <button 
-              className={`island-link ${currentPage === 'visitor-alerts' ? 'active' : ''}`}
-              onClick={() => setCurrentPage('visitor-alerts')}
-            >
-              Visitor
-            </button>
-            <button 
-              className={`island-link ${currentPage === 'gallery' ? 'active' : ''}`}
-              onClick={() => setCurrentPage('gallery')}
-            >
-              Gallery
-            </button>
-            <button 
-              className={`island-link ${currentPage === 'news-events' ? 'active' : ''}`}
-              onClick={() => setCurrentPage('news-events')}
-            >
-              News &amp; Events
-            </button>
-            <button 
-              className={`island-link ${currentPage === 'sponsorship' ? 'active' : ''}`}
-              onClick={() => setCurrentPage('sponsorship')}
-            >
-              Sponsorship Opportunities
-            </button>
-            <button 
-              className={`island-link ${currentPage === 'contact' ? 'active' : ''}`}
-              onClick={() => setCurrentPage('contact')}
-            >
-              Contact Us
-            </button>
-          </nav>
-
-          <div className="island-divider"></div>
-
-          {/* Right Action & Date indicator */}
-          <div className="island-right">
-            <div className="island-date-badge">
-              <span className="live-sparkle-dot"></span>
-              22–24 NOV
+          {/* Integrated Expanding Mobile Accordion Drawer */}
+          <div className="island-mobile-expand-body">
+            <div className="island-mobile-expand-inner">
+              <div className="drawer-links">
+                {NAV_ITEMS.map((item) => (
+                  <button 
+                    key={item.id}
+                    onClick={() => { 
+                      setMobileMenuOpen(false); 
+                      setCurrentPage(item.id); 
+                    }} 
+                    className={`drawer-link-btn ${currentPage === item.id ? 'active' : ''}`}
+                  >
+                    <span>{item.label}</span>
+                    {currentPage === item.id && <span className="drawer-active-dot"></span>}
+                  </button>
+                ))}
+              </div>
             </div>
-            
-            <button 
-              onClick={goToForm}
-              className="btn-island-primary"
-            >
-              <span>Register</span>
-              <ArrowRight size={13} />
-            </button>
-
-            <button 
-              className="island-mobile-toggle"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
           </div>
         </header>
-
-        {/* Mobile Flyout Menu */}
-        {mobileMenuOpen && (
-          <div className="island-mobile-drawer">
-            <div className="drawer-header">
-              <span>22, 23, 24 NOVEMBER 2026 • BM BIRLA AUDITORIUM, JAIPUR</span>
-            </div>
-            <div className="drawer-links">
-              <button onClick={() => { setCurrentPage('home'); setMobileMenuOpen(false); }} className={currentPage === 'home' ? 'active' : ''}>Home</button>
-              <button onClick={() => { setCurrentPage('about'); setMobileMenuOpen(false); }} className={currentPage === 'about' ? 'active' : ''}>About</button>
-              <button onClick={() => { setCurrentPage('exhibitor-alerts'); setMobileMenuOpen(false); }} className={currentPage === 'exhibitor-alerts' ? 'active' : ''}>Exhibitor</button>
-              <button onClick={() => { setCurrentPage('visitor-alerts'); setMobileMenuOpen(false); }} className={currentPage === 'visitor-alerts' ? 'active' : ''}>Visitor</button>
-              <button onClick={() => { setCurrentPage('gallery'); setMobileMenuOpen(false); }} className={currentPage === 'gallery' ? 'active' : ''}>Gallery</button>
-              <button onClick={() => { setCurrentPage('news-events'); setMobileMenuOpen(false); }} className={currentPage === 'news-events' ? 'active' : ''}>News &amp; Events</button>
-              <button onClick={() => { setCurrentPage('sponsorship'); setMobileMenuOpen(false); }} className={currentPage === 'sponsorship' ? 'active' : ''}>Sponsorship Opportunities</button>
-              <button onClick={() => { setCurrentPage('contact'); setMobileMenuOpen(false); }} className={currentPage === 'contact' ? 'active' : ''}>Contact Us</button>
-            </div>
-            <div className="drawer-cta-stack">
-              <button onClick={goToForm} className="btn-solid w-full">Register as Visitor</button>
-              <button onClick={goToForm} className="btn-outlined w-full">Exhibitor Intent</button>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Backdrop for click-outside collapse on mobile */}
+      {mobileMenuOpen && (
+        <div 
+          className="mobile-nav-backdrop" 
+          onClick={() => setMobileMenuOpen(false)} 
+          aria-hidden="true" 
+        />
+      )}
 
       {/* ========================================================
           PAGE 1: HOME
@@ -478,7 +552,7 @@ export default function App() {
                 <div 
                   key={index}
                   className={`hero-bg-slide ${currentSlide === index ? 'active' : ''}`}
-                  style={{ backgroundImage: `url(${imgUrl})` }}
+                  style={{ backgroundImage: `url("${encodeURI(imgUrl)}")` }}
                   aria-hidden="true"
                 />
               ))}
@@ -588,7 +662,7 @@ export default function App() {
             </section>
 
             {/* EVENT VENUE CAPSULE LUXURY CARD (SHIFTED UNDER WHY ATTEND JSA) */}
-            <section className="section-space border-bottom-clean">
+            <section className="section-space border-bottom-clean venue-outer-section">
               <div className="container">
                 <RevealSection>
                   <div className="venue-capsule-island">
@@ -700,6 +774,23 @@ export default function App() {
                 </RevealSection>
               </div>
             </section>
+ 
+            {/* JAIPUR PARALLAX WINDOW REVEAL — SINGLE ELEGANT PARAGRAPH */}
+            <section className="jaipur-window-reveal-section">
+              <div className="jaipur-reveal-overlay"></div>
+              <div className="container jaipur-reveal-container">
+                <RevealSection>
+                  <div className="jaipur-single-para-box">
+                    <h2 className="jaipur-reveal-title font-luxury">
+                      Why Jaipur? The Royal Silver Capital
+                    </h2>
+                    <p className="jaipur-single-para-text">
+                      Renowned worldwide as the Pink City, Jaipur is India’s undisputed epicentre for 92.5 sterling silver, antique filigree, and royal Meenakari—producing over 60% of the nation's handcrafted silver jewellery exports. Uniting three centuries of Johari Bazaar artistry with modern manufacturing excellence, Jaipur offers buyers direct bullion factory sourcing and effortless global connectivity via Jaipur International Airport, high-speed rail, the Delhi Expressway, and celebrated Rajasthani heritage hospitality.
+                    </p>
+                  </div>
+                </RevealSection>
+              </div>
+            </section>
 
             {/* SUPPORTING ASSOCIATIONS - HORIZONTAL SCROLLER */}
             <section className="section-space supporting-assoc-section">
@@ -735,18 +826,25 @@ export default function App() {
                   className="horizontal-cards-scroller"
                 >
                   {SUPPORTING_ASSOCIATIONS.map((leader, idx) => (
-                    <div key={idx} className="assoc-leader-card">
-                      <div className="assoc-avatar-wrap">
+                    <div key={idx} className="assoc-leader-card au-member-card">
+                      <div className="au-member-frame">
                         <img 
-                          src="https://img.magnific.com/premium-vector/avatar-profil-picture-icon-vector-design-template_393879-5783.jpg?semt=ais_hybrid&w=740&q=80" 
+                          src={`/Photos/Supporting%20Associations/${encodeURIComponent(leader.name)}.png`} 
                           alt={leader.name}
-                          className="assoc-avatar-img"
                           loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            const fb = e.currentTarget.parentElement.querySelector('.au-avatar-fallback');
+                            if (fb) fb.style.display = 'flex';
+                          }}
                         />
+                        <div className="au-avatar-fallback">
+                          <span>{leader.name.replace(/^SH\.\s*/i, '').split(' ').map(n => n[0]).slice(0, 2).join('')}</span>
+                        </div>
                       </div>
-                      <div className="assoc-info">
-                        <h4 className="assoc-name">{leader.name}</h4>
-                        <p className="assoc-role">{leader.role}</p>
+                      <div className="au-member-body">
+                        <h4 className="au-member-name font-serif">{leader.name}</h4>
+                        <span className="au-member-role-capsule">{leader.role}</span>
                       </div>
                     </div>
                   ))}
@@ -755,7 +853,7 @@ export default function App() {
             </section>
 
             {/* OUR EXHIBITORS - HORIZONTAL SCROLLER */}
-            <section className="section-space exhibitors-section bg-tint border-top-clean border-bottom-clean">
+            <section className="section-space exhibitors-section border-top-clean border-bottom-clean">
               <div className="container">
                 <RevealSection>
                   <div className="section-head-with-controls">
@@ -1083,7 +1181,7 @@ export default function App() {
                     </div>
                   </div>
                   <div className="au-heritage-img">
-                    <img src="https://jsasilvershow.com/images/crousel/1.jpg" alt="Silver Craft" />
+                    <img src="/hero/w6.jpg" alt="Silver Craft" />
                   </div>
                 </div>
               </RevealSection>
@@ -1102,20 +1200,11 @@ export default function App() {
                   <p className="au-section-sub">Senior industry pioneers, trade veterans, and legal advocates guiding association standards and policy direction.</p>
                 </div>
                 <div className="au-members-grid">
-                  {[
-                    { name: 'Sh. Ashok Maheshwari',  role: 'Advisory Member', img: 'ashok_maheshwari.jpg' },
-                    { name: 'Sh. Raju Mangodiwala',  role: 'Advisory Member', img: 'raju_mangodiwala.jpg' },
-                    { name: 'Sh. Ankit Vaidya',       role: 'Advisory Member', img: 'ankit_vaidya.jpg' },
-                    { name: 'Sh. Manish Khunteta',    role: 'Advisory Member', img: 'manish_khunteta.jpg' },
-                    { name: 'Sh. Apoorv Nawalkha',    role: 'Advisory Member', img: 'apoorv_nawalkha.jpg' },
-                    { name: 'Sh. Snehdeep Khyaliya',  role: 'Criminal Advocate', img: 'snehdeep_khyaliya.jpg' },
-                    { name: 'Sh. Prateek Singh',      role: 'Civil Advocate', img: 'prateek_singh.jpg' },
-                    { name: 'Sh. Sachin Kumar Gupta', role: 'Advisory Member', img: 'sachin_gupta.jpg' },
-                  ].map((m, i) => (
+                  {ADVISORY_MEMBERS.map((m, i) => (
                     <div key={i} className="au-member-card">
                       <div className="au-member-frame">
                         <img 
-                          src={`https://jsasilvershow.com/images/committee/${m.img}`} 
+                          src={m.img} 
                           alt={m.name} 
                           loading="lazy"
                           onError={(e) => {
@@ -1151,22 +1240,11 @@ export default function App() {
                   <p className="au-section-sub">The core executive team steering JSA Silver Show 2026 — strategic planning, industry governance, and operational integrity.</p>
                 </div>
                 <div className="au-members-grid">
-                  {[
-                    { name: 'Ujjwal Derewala',     role: 'Chairman',                        quote: 'With a focus on growth and global reach, JSA Silver Show stands as a key initiative for the silver industry.',               img: 'ujjwal_derewala.jpg' },
-                    { name: 'Abhineet Boochra',    role: 'Vice Chairman',                   quote: 'JSA Silver Show reflects the strength and legacy of our silver industry. We are committed to an exceptional experience.',       img: '2. ABHINEET BOOCHRA VICE, CHAIRMAN.JPG' },
-                    { name: 'Abhishek Bansal',     role: 'Vice Chairman',                   quote: 'This initiative reflects our collective effort to elevate the silver industry to new heights.',                                    img: '3. ABHISHEK BANSAL VICE, CHAIRMAN.JPG' },
-                    { name: 'Rahul Jain',          role: 'Hony. Secretary',                 quote: "Being part of JSA Silver Show is more than participation — it's about shaping the future of trade.",                          img: 'rahul_jain.jpg' },
-                    { name: 'Deepesh Goyal',       role: 'Treasurer',                       quote: 'With a focus on transparency and efficiency, we ensure smooth operations of the show.',                                            img: '5. DEEPESH GOYAL, TREASURER.JPG' },
-                    { name: 'Karan Boochra',       role: 'Digital & Innovation Secretary',  quote: 'Through digital innovation, we are creating a modern and seamless show experience.',                                              img: '6. KARAN BOOCHRA, DIGITAL AND INNOVATION SECRETARY.JPG' },
-                    { name: 'Manan Sogani',        role: 'Joint Secretary',                 quote: 'We are dedicated to coordinating efforts and delivering a smooth experience for all.',                                            img: '7. MANAN SOGANI, JOINT SECRETARY.JPG' },
-                    { name: 'Nishant Vijayvargia', role: 'Joint Treasurer',                 quote: 'We ensure proper planning and financial discipline to support the success of the show.',                                          img: '8. NISHANT VIJAYVARGIA, JOINT TREASURER.JPG' },
-                    { name: 'Shubham Agarwal',     role: 'Union Secretary',                 quote: 'We strive to unite the industry and create a strong platform for collaboration.',                                                 img: '9. SHUBHAM AGARWAL, UNION SECRETARY.JPG' },
-                    { name: 'Kushal Khunteta',     role: 'Union Secretary',                 quote: 'Our aim is to strengthen industry relations and encourage growth through this platform.',                                         img: '10. KUSHAL KHUNTETA, UNION SECRETARY.JPG' },
-                  ].map((t, i) => (
+                  {BOARD_OF_TRUSTEES.map((t, i) => (
                     <div key={i} className="au-member-card">
                       <div className="au-member-frame">
                         <img 
-                          src={`https://jsasilvershow.com/images/committee/${t.img}`} 
+                          src={t.img} 
                           alt={t.name} 
                           loading="lazy"
                           onError={(e) => {
@@ -1205,23 +1283,11 @@ export default function App() {
                   <p className="au-section-sub">The dynamic on-ground committee managing booth logistics, exhibitor coordination, and buyer hospitality.</p>
                 </div>
                 <div className="au-members-grid">
-                  {[
-                    { name: 'Amit Maheshwari',      role: 'Show Committee', img: 'amit_maheshwari.jpg' },
-                    { name: 'Aashish Khandelwal',   role: 'Show Committee', img: 'aashish_khandelwal.jpg' },
-                    { name: 'Rambabu Natani',        role: 'Show Committee', img: 'rambabu_natani.jpg' },
-                    { name: 'Anshul Soni',           role: 'Show Committee', img: 'anshul_soni.jpg' },
-                    { name: 'Saloni Parasrampuria',  role: 'Show Committee', img: 'saloni_parasrampuria.jpg' },
-                    { name: 'Neeraj Jain',           role: 'Show Committee', img: 'neeraj_jain.jpg' },
-                    { name: 'Alok Katta',            role: 'Show Committee', img: 'alok_katta.jpg' },
-                    { name: 'Vipin Gupta',           role: 'Show Committee', img: 'vipin_gupta.jpg' },
-                    { name: 'Ramanuj Saraf',         role: 'Show Committee', img: 'ramanuj_saraf.jpg' },
-                    { name: 'Tribhuvan Agarwal',     role: 'Show Committee', img: 'tribhuvan_agarwal.jpg' },
-                    { name: 'Vikas Soni',            role: 'Show Committee', img: 'vikas_soni.jpg' },
-                  ].map((m, i) => (
+                  {SHOW_COMMITTEE.map((m, i) => (
                     <div key={i} className="au-member-card">
                       <div className="au-member-frame">
                         <img 
-                          src={`https://jsasilvershow.com/images/committee/${m.img}`} 
+                          src={m.img} 
                           alt={m.name} 
                           loading="lazy"
                           onError={(e) => {
@@ -1798,39 +1864,42 @@ export default function App() {
         <SponsorshipPage onGoToForm={goToForm} />
       )}
 
-      {/* HIGH-AESTHETIC REGISTRATION CTA BANNER */}
+      {/* HIGH-AESTHETIC REGISTRATION CTA BANNER — PARALLAX WINDOW REVEAL */}
       <section className="registration-cta-banner">
-        <div className="container">
-          <div className="cta-banner-card">
-            <div className="cta-banner-content">
-              <span className="cta-pill-kicker">
-                <span className="live-sparkle-dot"></span>
-                22, 23, 24 NOVEMBER 2026 • BM BIRLA AUDITORIUM, JAIPUR
-              </span>
-              <h2 className="cta-banner-title font-serif">
-                Be Part of Jaipur's Silver Legacy
-              </h2>
-              <p className="cta-banner-desc">
-                Whether you're an artisan, trader, manufacturer, or exporter — pre-register now for complimentary direct access, B2B sourcing lounges, and verified hall passes.
-              </p>
-              <div className="cta-btn-cluster">
-                <button 
-                  onClick={goToForm}
-                  className="btn-cta-primary"
-                >
-                  <span>Register as Visitor (Free Pass)</span>
-                  <ArrowRight size={16} />
-                </button>
-                <button 
-                  onClick={goToForm} 
-                  className="btn-cta-secondary"
-                >
-                  <span>Book a Booth / Exhibitor Intent</span>
-                  <ArrowUpRight size={15} />
-                </button>
+        <div className="cta-banner-overlay"></div>
+        <div className="container jaipur-reveal-container">
+          <RevealSection>
+            <div className="cta-banner-card">
+              <div className="cta-banner-content">
+                <span className="cta-pill-kicker">
+                  <span className="live-sparkle-dot"></span>
+                  22, 23, 24 NOVEMBER 2026 • BM BIRLA AUDITORIUM, JAIPUR
+                </span>
+                <h2 className="cta-banner-title font-luxury">
+                  Be Part of Jaipur's Silver Legacy
+                </h2>
+                <p className="cta-banner-desc">
+                  Whether you're an artisan, trader, manufacturer, or exporter — pre-register now for complimentary direct access, B2B sourcing lounges, and verified hall passes.
+                </p>
+                <div className="cta-btn-cluster">
+                  <button 
+                    onClick={goToForm}
+                    className="btn-cta-primary"
+                  >
+                    <span>Register as Visitor (Free Pass)</span>
+                    <ArrowRight size={16} />
+                  </button>
+                  <button 
+                    onClick={goToForm} 
+                    className="btn-cta-secondary"
+                  >
+                    <span>Book a Booth / Exhibitor Intent</span>
+                    <ArrowUpRight size={15} />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          </RevealSection>
         </div>
       </section>
 
@@ -1845,7 +1914,7 @@ export default function App() {
                   <img src="/jsa-show-logo.jpg" alt="JSA Silver Show" className="footer-logo" />
                 </div>
                 <div>
-                  <h3 className="f-title font-serif">JSA Silver Show</h3>
+                  <h3 className="f-title font-luxury">JSA Silver Show</h3>
                   <span className="f-sub">B2B TRADE EXHIBITION • JAIPUR 2026</span>
                 </div>
               </div>
